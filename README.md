@@ -8,51 +8,82 @@ Complete engineering workflow for Claude Code. Extends [Superpowers](https://git
 
 ```bash
 # 1. Install Superpowers first (required dependency)
-#    In Claude Code:
 /plugin install superpowers@claude-plugins-official
 
-# 2. Clone and install this plugin
-git clone https://github.com/YOUR_USERNAME/engineering-workflow-plugin.git
-cd engineering-workflow-plugin
-./setup
+# 2. Add the engineering-workflow marketplace
+/plugin marketplace add AndsGo/engineering-workflow-plugin
+
+# 3. Install the plugin
+/plugin install engineering-workflow@engineering-workflow-marketplace
 ```
 
-The setup script checks dependencies, then installs to your chosen location (global or project).
+Done. The plugin loads automatically in every new session.
 
 ## Install
 
-### Option A: Clone + Setup (recommended)
+### Option A: Via Plugin Marketplace (recommended)
+
+The official Claude Code marketplace install method. Two commands in Claude Code:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/engineering-workflow-plugin.git ~/.engineering-workflow
+# Step 1: Add the marketplace (one-time)
+/plugin marketplace add AndsGo/engineering-workflow-plugin
+
+# Step 2: Install the plugin
+/plugin install engineering-workflow@engineering-workflow-marketplace
+```
+
+To update later:
+
+```bash
+/plugin marketplace update engineering-workflow-marketplace
+```
+
+### Option B: For a specific project (team sharing)
+
+Add to your project's `.claude/settings.json` so teammates get it automatically:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "engineering-workflow-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "AndsGo/engineering-workflow-plugin"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "engineering-workflow@engineering-workflow-marketplace": true
+  }
+}
+```
+
+Teammates who trust the project folder are prompted to install automatically.
+
+### Option C: Clone + Setup (manual)
+
+```bash
+git clone https://github.com/AndsGo/engineering-workflow-plugin.git ~/.engineering-workflow
 cd ~/.engineering-workflow && ./setup --global
 ```
 
-This copies the plugin to `~/.claude/plugins/engineering-workflow/`. Every Claude Code session loads it automatically.
+This copies the plugin to `~/.claude/plugins/engineering-workflow/`.
 
-### Option B: Project-local install
-
-```bash
-git clone https://github.com/YOUR_USERNAME/engineering-workflow-plugin.git
-cd engineering-workflow-plugin && ./setup --project
-```
-
-This copies to `.claude/plugins/engineering-workflow/` in the current project. Commit it to share with teammates.
-
-### Option C: --plugin-dir (development/testing)
+### Option D: --plugin-dir (development/testing)
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/engineering-workflow-plugin.git ~/engineering-workflow-plugin
+git clone https://github.com/AndsGo/engineering-workflow-plugin.git ~/engineering-workflow-plugin
 claude --plugin-dir ~/engineering-workflow-plugin
 ```
 
 Loads the plugin from source. Edits are reflected immediately.
 
-### Option D: One-liner install prompt
+### Option E: One-liner install prompt
 
 Paste this into Claude Code and let it do the rest:
 
-> Install engineering-workflow: run `git clone https://github.com/YOUR_USERNAME/engineering-workflow-plugin.git ~/.engineering-workflow && cd ~/.engineering-workflow && ./setup --global` and report what happened.
+> Install engineering-workflow: run `/plugin marketplace add AndsGo/engineering-workflow-plugin` then `/plugin install engineering-workflow@engineering-workflow-marketplace`. If Superpowers is not installed, install it first with `/plugin install superpowers@claude-plugins-official`.
 
 ## Prerequisites
 

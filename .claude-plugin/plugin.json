@@ -1,7 +1,19 @@
 {
   "name": "engineering-workflow",
+  "description": "Complete engineering workflow: multi-role code review, knowledge accumulation, security audit, browser testing, PR feedback resolution, and document sync. Extends Superpowers discipline layer with process and tool capabilities.",
   "version": "1.0.0",
-  "description": "Complete engineering workflow with multi-role code review, knowledge accumulation, security audit, browser testing, PR feedback resolution, and document sync. Built on Superpowers discipline layer.",
-  "author": "custom",
-  "license": "MIT"
+  "author": {
+    "name": "Engineering Workflow Contributors"
+  },
+  "homepage": "https://github.com/AndsGo/engineering-workflow-plugin",
+  "repository": "https://github.com/AndsGo/engineering-workflow-plugin",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "code-review",
+    "security-audit",
+    "knowledge-management",
+    "engineering",
+    "superpowers"
+  ]
 }

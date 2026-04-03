@@ -3,7 +3,7 @@
 ## Quick Start
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/engineering-workflow-plugin.git
+git clone https://github.com/AndsGo/engineering-workflow-plugin.git
 cd engineering-workflow-plugin
 
 # Load the plugin from source for development
