@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# PreToolUse hook: gates git commit/push
+# Checks if the engineering workflow review steps were followed
+# Returns advisory warnings (does not hard-block)
+
+set -euo pipefail
+
+# Check if we're in a git repo
+if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  exit 0
+fi
+
+BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
+warnings=""
+
+# Gate 1: Check if on main/master (should be on feature branch)
+if [ "$BRANCH" = "main" ] || [ "$BRANCH" = "master" ]; then
+  warnings="${warnings}WARNING: Committing directly to ${BRANCH}. Use a feature branch for reviewed changes.\n"
+fi
+
+# Gate 2: Check for review artifacts (soft check)
+# If .context/engineering-workflow/ has no review artifacts, warn
+if [ -d ".context/engineering-workflow" ]; then
+  # -mmin may not work on all platforms (e.g., some Windows Git Bash builds)
+  # Fallback: just check existence without time filter
+  has_review=$(find .context/engineering-workflow -name "review-*.json" -mmin -120 2>/dev/null | head -1 || \
+               find .context/engineering-workflow -name "review-*.json" 2>/dev/null | head -1)
+  if [ -z "$has_review" ]; then
+    warnings="${warnings}ADVISORY: No recent review artifact found. Consider running structured-review before committing.\n"
+  fi
+else
+  # No workflow context at all — first use or cleanup happened
+  warnings="${warnings}ADVISORY: No engineering-workflow context found. If this is a significant change, consider running structured-review first.\n"
+fi
+
+# Gate 3: Check if tests were run recently (look for test output indicators)
+# This is a soft heuristic — not all projects have the same test patterns
+if [ -f "package.json" ]; then
+  # Node.js project — check if node_modules/.cache has recent test output
+  # Use node if available, otherwise grep as fallback
+  test_script=$(node -e "try{console.log(require('./package.json').scripts.test||'')}catch(e){}" 2>/dev/null || \
+                grep -o '"test"[[:space:]]*:[[:space:]]*"[^"]*"' package.json 2>/dev/null || echo "")
+  if [ -n "$test_script" ] && [ "$test_script" != "undefined" ]; then
+    warnings="${warnings}REMINDER: This project has a test script. Verify tests pass before committing (superpowers:verification-before-completion).\n"
+  fi
+fi
+
+# Output warnings as advisory context (never block)
+if [ -n "$warnings" ]; then
+  escape_for_json() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    s="${s//$'\r'/\\r}"
+    s="${s//$'\t'/\\t}"
+    printf '%s' "$s"
+  }
+
+  escaped_warnings=$(escape_for_json "$warnings")
+
+  if [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -z "${COPILOT_CLI:-}" ]; then
+    printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "PreToolUse",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped_warnings"
+  else
+    printf '{\n  "additionalContext": "%s"\n}\n' "$escaped_warnings"
+  fi
+fi
+
+exit 0

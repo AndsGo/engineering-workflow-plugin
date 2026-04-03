@@ -1,0 +1,7 @@
+{
+  "name": "engineering-workflow",
+  "version": "1.0.0",
+  "description": "Complete engineering workflow with multi-role code review, knowledge accumulation, security audit, browser testing, PR feedback resolution, and document sync. Built on Superpowers discipline layer.",
+  "author": "custom",
+  "license": "MIT"
+}

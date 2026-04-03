@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# SessionStart hook for engineering-workflow plugin
+# 1. Checks Superpowers dependency and guides installation if missing
+# 2. Injects flow control rules into every conversation
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+# --- Dependency Check: Superpowers ---
+superpowers_warning=""
+superpowers_found="false"
+
+# Check marketplace install (Claude Code)
+if [ -d "${HOME}/.claude/plugins/cache" ]; then
+  sp_cache=$(find "${HOME}/.claude/plugins/cache" -path "*/superpowers/*/skills/using-superpowers/SKILL.md" 2>/dev/null | head -1)
+  [ -n "$sp_cache" ] && superpowers_found="true"
+fi
+
+# Check manual install locations
+for sp_path in \
+  "${HOME}/.claude/skills/superpowers" \
+  ".claude/skills/superpowers" \
+  ".claude/plugins/superpowers"; do
+  if [ -f "${sp_path}/skills/using-superpowers/SKILL.md" ] 2>/dev/null || \
+     [ -f "${sp_path}/SKILL.md" ] 2>/dev/null; then
+    superpowers_found="true"
+    break
+  fi
+done
+
+# Check if superpowers skill is visible (fallback: check if the skill name appears in installed plugins)
+if [ "$superpowers_found" = "false" ]; then
+  # Last resort: check plugin settings for superpowers
+  for settings_file in \
+    ".claude/settings.local.json" \
+    ".claude/settings.json" \
+    "${HOME}/.claude/settings.json"; do
+    if [ -f "$settings_file" ] && grep -q "superpowers" "$settings_file" 2>/dev/null; then
+      superpowers_found="true"
+      break
+    fi
+  done
+fi
+
+if [ "$superpowers_found" = "false" ]; then
+  superpowers_warning="\\n\\n<IMPORTANT_DEPENDENCY>\\n**Superpowers plugin is NOT detected.** Engineering Workflow depends on Superpowers for TDD, systematic debugging, and verification discipline.\\n\\nInstall Superpowers first:\\n- Claude Code: \`/plugin marketplace add obra/superpowers-marketplace\` then \`/plugin install superpowers@superpowers-marketplace\`\\n- Or: \`/plugin install superpowers@claude-plugins-official\`\\n\\nThen restart this session.\\n</IMPORTANT_DEPENDENCY>"
+fi
+
+# --- Read meta skill content ---
+meta_skill_content=$(cat "${PLUGIN_ROOT}/skills/using-engineering-workflow/SKILL.md" 2>/dev/null || echo "Error reading engineering-workflow meta skill")
+
+# --- Workflow state ---
+workflow_state=""
+if [ -d ".context/engineering-workflow" ]; then
+  if ls .context/engineering-workflow/review-*.json 1>/dev/null 2>&1; then
+    workflow_state="REVIEW_DONE=true"
+  fi
+  if ls .context/engineering-workflow/plan-review-*.json 1>/dev/null 2>&1; then
+    workflow_state="${workflow_state} PLAN_REVIEWED=true"
+  fi
+fi
+
+# --- Count learnings ---
+learnings_count=0
+if [ -d "docs/learnings" ]; then
+  learnings_count=$(find docs/learnings -name "*.md" -not -path "*/archive/*" 2>/dev/null | wc -l | tr -d ' ')
+fi
+
+# --- Optional tools check ---
+optional_warnings=""
+if ! command -v agent-browser >/dev/null 2>&1; then
+  optional_warnings="${optional_warnings}\\nNOTE: agent-browser CLI not found. e2e-browser-test skill requires it: npm install -g agent-browser"
+fi
+if ! command -v gh >/dev/null 2>&1; then
+  optional_warnings="${optional_warnings}\\nNOTE: gh CLI not found. resolve-pr-feedback skill requires it: https://cli.github.com/"
+fi
+
+# --- Escape for JSON ---
+escape_for_json() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    s="${s//$'\r'/\\r}"
+    s="${s//$'\t'/\\t}"
+    printf '%s' "$s"
+}
+
+meta_escaped=$(escape_for_json "$meta_skill_content")
+state_info="LEARNINGS_COUNT: ${learnings_count}\\nSUPERPOWERS: ${superpowers_found}\\n${workflow_state}${optional_warnings}"
+
+session_context="<ENGINEERING_WORKFLOW>\\nYou have the engineering-workflow plugin active.${superpowers_warning}\\n\\n**Below is the flow control meta-skill. Follow it for ALL engineering work:**\\n\\n${meta_escaped}\\n\\nWorkflow state: ${state_info}\\n</ENGINEERING_WORKFLOW>"
+
+# --- Output (platform-adaptive) ---
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+  printf '{\n  "additional_context": "%s"\n}\n' "$session_context"
+elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -z "${COPILOT_CLI:-}" ]; then
+  printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$session_context"
+else
+  printf '{\n  "additionalContext": "%s"\n}\n' "$session_context"
+fi
+
+exit 0
