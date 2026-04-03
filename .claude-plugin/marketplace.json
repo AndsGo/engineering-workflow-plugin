@@ -10,7 +10,7 @@
   "plugins": [
     {
       "name": "engineering-workflow",
-      "source": ".",
+      "source": "./",
       "description": "Complete engineering workflow: multi-role code review, knowledge accumulation, security audit, browser testing, PR feedback resolution, and document sync. Extends Superpowers with process and tool capabilities.",
       "version": "1.0.0",
       "author": {
