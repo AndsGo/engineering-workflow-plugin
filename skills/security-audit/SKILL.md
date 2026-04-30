@@ -100,7 +100,7 @@ If no changed files match security-sensitive patterns, report: "No security-sens
 
 Scan the full codebase for security-sensitive areas. Use the native file-search tool (Glob) to find files matching the patterns above, then read and audit them.
 
-## Step 0: Lookup Prior Knowledge
+## Phase 0.5: Lookup Prior Knowledge
 
 Follow `learnings-protocol.md` READ phase. Filter to learnings with categories: `auth`, `race-condition`, `data-integrity`, `config-drift`, `encoding`, `migration`. Also consult `CLAUDE.md`/`AGENTS.md` for security conventions and prior security audit reports under `docs/` or `.context/`.
 

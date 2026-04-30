@@ -126,7 +126,7 @@ done
 
 If `--port` was specified, use that port. If no server found, ask the user to start one.
 
-## Step 0: Lookup Prior Knowledge
+## Step 4: Lookup Prior Knowledge
 
 Follow `learnings-protocol.md` READ phase. Filter to learnings citing the affected pages. Prior **Bug learnings** about the page → add the documented interaction to the test plan.
 
