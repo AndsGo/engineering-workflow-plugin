@@ -141,6 +141,12 @@ If the `docs/learnings/` directory doesn't exist, create it.
 ### Bug Track Template
 
 ```markdown
+---
+track: bug
+status: active
+category: <choose from references/categories.md, e.g., race-condition, auth — omit if uncategorizable>
+last-verified: <YYYY-MM-DD, today's date when written>
+---
 # <Title: What was broken>
 
 **Track:** Bug
@@ -179,6 +185,12 @@ lint rules, architectural changes.
 ### Knowledge Track Template
 
 ```markdown
+---
+track: knowledge
+status: active
+category: <choose from references/categories.md, e.g., pattern, pitfall — omit if uncategorizable>
+last-verified: <YYYY-MM-DD>
+---
 # <Title: Pattern or technique name>
 
 **Track:** Knowledge
@@ -214,6 +226,12 @@ was applied or should be applied.
 ### Decision Track Template
 
 ```markdown
+---
+track: decision
+status: active
+category: <choose from references/categories.md, e.g., architecture, trade-off — omit if uncategorizable>
+last-verified: <YYYY-MM-DD>
+---
 # <Title: Decision that was made>
 
 **Track:** Decision
@@ -264,6 +282,7 @@ After writing the document:
 1. Search for related existing learnings
 2. Add `## Related` links in both directions (new doc → existing, existing → new)
 3. If the learning affects project conventions, note whether CLAUDE.md or AGENTS.md should be updated
+- **Supersedence:** if this new learning replaces an older one, edit the older doc's frontmatter to `status: superseded` and add `superseded-by: <this-new-file's-relative-path>`. The `Related:` link to the new doc remains for backwards traceability.
 
 ## Step 6: Commit
 
@@ -272,6 +291,12 @@ Commit the learning document with a descriptive message:
 ```
 docs: compound learning — <brief description>
 ```
+
+## Frontmatter Field Guide
+
+Required by `learnings-protocol.md` WRITE phase. Always emit `track` (matching the template used) and `status` (`active` for new docs). Set `last-verified` to today's date. Set `category` only when it maps cleanly to one in `references/categories.md` — uncategorized is fine. Set `superseded-by` only together with `status: superseded` (relative path to the superseding doc); never alone.
+
+**Read-side tolerance:** existing learnings without frontmatter remain valid. Parsers apply defaults: `track=knowledge`, `status=active`, `last-verified=git-creation-date`.
 
 ## Refresh Cycle
 
