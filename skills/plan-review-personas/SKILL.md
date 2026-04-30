@@ -80,22 +80,9 @@ Locate the plan file. Common locations:
 
 Read the full plan. If the plan cannot be found, ask the user for the path.
 
-### 0b: Lookup prior knowledge
+### 0b: Lookup Prior Knowledge
 
-Before reviewing, search for learnings relevant to what the plan is building.
-
-**Search locations:**
-
-1. `docs/learnings/` — documented Bug/Knowledge/Decision learnings from prior work
-2. `docs/plans/` or `docs/superpowers/plans/` — prior plans for similar features (check if something was tried before)
-3. `CLAUDE.md` or `AGENTS.md` — project conventions that constrain plan choices
-
-**How prior knowledge affects the review:**
-
-- **Prior Bug learning in the same area** → feed to **adversarial reviewer** as a known failure mode ("this area failed before because X — check if the new plan avoids it")
-- **Prior Decision learning** → feed to **feasibility reviewer** as a constraint ("a prior decision chose Y because Z — verify the plan is compatible")
-- **Prior failed or abandoned plan** → feed to **scope guardian** as precedent ("a similar plan was abandoned — check if scope issues recur")
-- **No matches found** → proceed normally. This step is additive, never blocking.
+Follow `learnings-protocol.md` READ phase. Filter to Decision-track and pattern-category learnings relevant to the plan's scope. Prior plans in `docs/plans/` or `docs/superpowers/plans/` are also worth scanning for "we tried this before" context.
 
 ## Step 1: Assess Complexity
 

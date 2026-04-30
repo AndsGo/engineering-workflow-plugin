@@ -100,24 +100,9 @@ If no changed files match security-sensitive patterns, report: "No security-sens
 
 Scan the full codebase for security-sensitive areas. Use the native file-search tool (Glob) to find files matching the patterns above, then read and audit them.
 
-## Phase 0.5: Lookup Prior Security Knowledge
+## Step 0: Lookup Prior Knowledge
 
-Before scanning, check for prior security learnings and decisions that affect this audit.
-
-**Search locations:**
-
-1. `docs/learnings/` — search for files with categories: `auth`, `race-condition`, `data-integrity`, `config-drift`, `encoding`
-2. `CLAUDE.md` or `AGENTS.md` — security-related conventions (e.g., "always use parameterized queries", "auth middleware is X")
-3. Prior security audit reports — search for `Security Audit Report` in `docs/` or `.context/`
-
-**How prior knowledge affects the audit:**
-
-- **Prior Bug learning with security implications** → treat the affected area as **elevated risk** — audit more thoroughly even if the current diff looks clean
-- **Prior Decision learning about security architecture** (e.g., "chose JWT over session cookies because X") → verify the change respects this decision; if it contradicts, flag as P1
-- **Prior security audit findings that were deferred** → check if they are still present; if so, re-report with escalated severity ("known issue, still unresolved")
-- **Documented security conventions in CLAUDE.md** → verify the change complies
-
-**If no prior knowledge exists:** Proceed normally. This step is additive, never blocking.
+Follow `learnings-protocol.md` READ phase. Filter to learnings with categories: `auth`, `race-condition`, `data-integrity`, `config-drift`, `encoding`, `migration`. Also consult `CLAUDE.md`/`AGENTS.md` for security conventions and prior security audit reports under `docs/` or `.context/`.
 
 ## Phase 1: Dependency Scan
 

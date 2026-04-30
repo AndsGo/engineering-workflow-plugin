@@ -73,28 +73,15 @@ If on the base branch with no diff: **"Nothing to review — you're on the base 
 
 ## Step 1: Lookup Prior Knowledge
 
-Before reviewing, check if the project has documented learnings relevant to the changed files.
+Follow `learnings-protocol.md` READ phase. Use `docs/learnings/INDEX.md` to scope by changed-files Domain; prefer 📚 synthesis docs. Cite consulted learnings in the reviewer prompt's prior-context section.
 
-**Search locations (in order):**
+Per-skill specifics:
+- If a prior **Bug learning** matches a changed area → elevate that area's review priority and include the root cause context in the reviewer agent prompt.
+- If a prior **Decision learning** matches → verify the change respects the documented rationale; if it contradicts, flag as a finding.
+- If a prior **Knowledge/Pattern learning** matches → include as reference context for reviewers to check compliance.
+- Also consult `CLAUDE.md`/`AGENTS.md` for project-specific review conventions and `MEMORY.md` for cross-project patterns.
 
-1. `docs/learnings/` — project learnings from `knowledge-compound`
-2. `CLAUDE.md` or `AGENTS.md` — project-specific review conventions or known pitfalls
-3. System memory (MEMORY.md) — cross-project patterns from `persona`
-
-**Search method:** Use the native content-search tool (Grep) to find learnings related to the changed files, modules, or patterns in the diff.
-
-```
-For each changed file/module in the diff:
-  Search docs/learnings/ for the module name, file name, or related keywords
-  If matches found: note them as "prior context" for reviewer agents
-```
-
-**How prior knowledge affects the review:**
-- If a prior **Bug learning** matches a changed area → elevate that area's review priority and include the root cause context in the reviewer agent prompt
-- If a prior **Decision learning** matches → verify the change respects the documented rationale; if it contradicts, flag as a finding
-- If a prior **Knowledge/Pattern learning** matches → include as reference context for reviewers to check compliance
-
-**If no learnings exist or none match:** Proceed normally. This step is additive, never blocking.
+If no learnings exist or none match: proceed normally. This step is additive, never blocking.
 
 ## Step 1b: Read the Checklist
 

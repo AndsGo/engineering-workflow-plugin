@@ -259,14 +259,11 @@ After PR is created or updated:
 
 ## Step 7: Prior Knowledge Check and Post-Ship Documentation
 
-### 7a: Check for relevant learnings
+### 7a: Lookup Prior Knowledge
 
-Before finalizing, scan for prior learnings that affect this shipment:
-
-- Search `docs/learnings/` for learnings tagged with files or modules in this PR
-- If a **Pitfall learning** matches → verify the PR doesn't reintroduce the documented issue
-- If a **Decision learning** matches → verify the PR is consistent with the documented rationale
-- If a conflict is found → flag it in the PR description under "Notes for Reviewers"
+Follow `learnings-protocol.md` READ phase. Filter to **Pitfall** and **Decision** learnings citing files in this PR.
+- Pitfall match → verify PR doesn't reintroduce the documented issue.
+- Decision match → verify PR is consistent with the documented rationale.
 
 ### 7b: Post-Ship Documentation Check
 

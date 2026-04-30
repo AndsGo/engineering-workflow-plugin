@@ -11,6 +11,10 @@ Document solved problems, engineering decisions, and patterns as reusable knowle
 
 **Core principle:** Knowledge that stays in a conversation is lost. Knowledge that's written down compounds.
 
+## Protocol Compliance
+
+This skill implements the **WRITE phase** of `skills/using-engineering-workflow/references/learnings-protocol.md`. The frontmatter, cross-reference, and synthesis rules below derive from the protocol; if they diverge, the protocol wins.
+
 ## The Iron Law
 
 ```

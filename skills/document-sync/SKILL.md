@@ -236,5 +236,5 @@ If CHANGELOG was NOT modified in this branch: skip this step entirely.
 
 - **Before this skill:** `ship-and-pr` creates the PR and suggests doc sync (Step 7)
 - **After this skill:** Commit doc updates to the same branch, push to update the PR
-- **Complements:** `knowledge-compound` — docs describe what IS; learnings describe what was LEARNED
+- **Complements:** `knowledge-compound` — docs describe what IS; learnings describe what was LEARNED. When suggesting `knowledge-compound`, follow `learnings-protocol.md` WRITE phase requirements (`track` / `status` / cross-reference).
 - **Knowledge output:** If doc sync reveals a recurring drift pattern (same file always goes stale), suggest `knowledge-compound` Knowledge track

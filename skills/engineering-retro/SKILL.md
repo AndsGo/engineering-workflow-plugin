@@ -156,11 +156,11 @@ Calculate these ratios from the commit data:
 
 Before generating qualitative analysis, check for prior context.
 
-**Search locations:**
+**Source for prior knowledge:** Follow `learnings-protocol.md` READ phase. Additionally enumerate learnings created in the current retro window (regardless of relevance) for the "Knowledge compounded this period" section — retros track knowledge output, not just code output.
 
-1. `docs/learnings/` — all documented learnings, especially those created in the current time window
-2. Prior retro reports — search for `Engineering Retro:` in `docs/` or project docs
-3. Prior retro action items — if a previous retro recommended specific improvements, check if the metrics show improvement
+**Other prior context:**
+1. Prior retro reports — search for `Engineering Retro:` heading in `docs/` or project docs
+2. Prior retro action items — if a previous retro recommended specific improvements, check if the metrics show improvement
 
 **How prior knowledge affects the retro:**
 

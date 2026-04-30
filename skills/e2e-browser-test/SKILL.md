@@ -126,12 +126,9 @@ done
 
 If `--port` was specified, use that port. If no server found, ask the user to start one.
 
-## Step 4: Prior Knowledge Lookup
+## Step 0: Lookup Prior Knowledge
 
-Search `docs/learnings/` for known UI bugs, browser-specific issues, or testing pitfalls in the affected pages.
-
-- If a prior **Bug learning** mentions a page being tested → add that specific interaction to the test plan
-- If a prior **Knowledge learning** documents a UI pattern → verify it's correctly implemented
+Follow `learnings-protocol.md` READ phase. Filter to learnings citing the affected pages. Prior **Bug learnings** about the page → add the documented interaction to the test plan.
 
 ## Step 5: Execute Tests
 

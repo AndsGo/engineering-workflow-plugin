@@ -79,11 +79,16 @@ These thoughts mean STOP — you are about to skip a flow gate:
 | "Nothing to learn from this session" | GATE 5: Offer knowledge-compound. Let the user decide. |
 | "Security isn't relevant here" | Check file patterns: auth, input, API, secrets, config |
 
-### Rule 4: Knowledge Loop
+### Rule 4: Learnings Discipline
 
-Every skill that analyzes code should:
-1. **READ** prior knowledge at the start (search `docs/learnings/`)
-2. **WRITE** new knowledge at the end (suggest `knowledge-compound` if findings are reusable)
+All learning-touching skills MUST follow `references/learnings-protocol.md`.
+
+In short:
+- **READ:** INDEX-first → 📚 synthesis preferred → targeted reads → Grep fallback. Cite sources.
+- **WRITE:** suggest `knowledge-compound`, never write directly. Frontmatter required (`track`, `status`).
+- **MAINTAIN:** `learnings-refresh` skill (ships in v1.2). Until then, manual curation against the protocol is acceptable.
+
+If `docs/learnings/INDEX.md` does not exist and the project has ≥30 learnings, consider hand-writing one (or wait for v1.2 to automate).
 
 This is not optional. Prior knowledge lookup prevents repeating mistakes. Knowledge output prevents losing insights.
 
