@@ -144,8 +144,8 @@ If the `docs/learnings/` directory doesn't exist, create it.
 ---
 track: bug
 status: active
-category: <choose from references/categories.md, e.g., race-condition, auth — omit if uncategorizable>
-last-verified: <YYYY-MM-DD, today's date when written>
+category: <race-condition | auth | data-integrity | omit>
+last-verified: <YYYY-MM-DD>
 ---
 # <Title: What was broken>
 
@@ -188,7 +188,7 @@ lint rules, architectural changes.
 ---
 track: knowledge
 status: active
-category: <choose from references/categories.md, e.g., pattern, pitfall — omit if uncategorizable>
+category: <pattern | pitfall | testing | omit>
 last-verified: <YYYY-MM-DD>
 ---
 # <Title: Pattern or technique name>
@@ -229,7 +229,7 @@ was applied or should be applied.
 ---
 track: decision
 status: active
-category: <choose from references/categories.md, e.g., architecture, trade-off — omit if uncategorizable>
+category: <architecture | trade-off | api-design | omit>
 last-verified: <YYYY-MM-DD>
 ---
 # <Title: Decision that was made>
@@ -282,7 +282,7 @@ After writing the document:
 1. Search for related existing learnings
 2. Add `## Related` links in both directions (new doc → existing, existing → new)
 3. If the learning affects project conventions, note whether CLAUDE.md or AGENTS.md should be updated
-- **Supersedence:** if this new learning replaces an older one, edit the older doc's frontmatter to `status: superseded` and add `superseded-by: <this-new-file's-relative-path>`. The `Related:` link to the new doc remains for backwards traceability.
+4. **Supersedence:** if this new learning replaces an older one, edit the older doc's frontmatter to `status: superseded` and add `superseded-by: <this-new-file's-relative-path>`. The `Related:` link to the new doc remains for backwards traceability.
 
 ## Step 6: Commit
 
