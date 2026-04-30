@@ -10,14 +10,13 @@ When `learnings-refresh` surfaces a learning with one or more signals, apply the
 | `old-and-uncited` (180+ days, 0 inbound `Related:`) | candidate `archive` | Probably never reused |
 | Cluster ≥3 same category | candidate `synthesize` | Worth rolling into one umbrella doc |
 | Decision-track learning, ANY signal | candidate `supersede` (NOT archive) | Decisions retain rationale; supersede preserves history |
-| Bug-track learning, last-verified > 90 days, ref-missing | candidate `archive` (user confirms bug class extinct) | Script can't prove fix; user judges |
+| Bug-track learning, ref-missing | candidate `archive` (user confirms bug class extinct) | Script can't prove fix; user judges |
 | `status: superseded` for ≥1 refresh cycle | candidate `archive` | Grace period to surface broken inbound links |
 
 ## Threshold Reference
 
 These thresholds are HARDCODED in the scripts (per S2/S3 plan-review). Revisit only if a second project demonstrates a different cadence:
 
-- `STALE_DAYS_BUG = 90` (in `detect_stale.py`) — bug-track staleness
 - `ORPHAN_DAYS = 180` (in `detect_stale.py`) — no-refs staleness
 - `MIN_CLUSTER_SIZE = 3` (in `cluster_by_category.py`) — synthesis trigger
 

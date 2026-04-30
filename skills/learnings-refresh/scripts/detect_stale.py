@@ -18,7 +18,6 @@ sys.path.insert(0, str(SCRIPT_DIR))
 from parse_learnings import collect_learnings, resolve_learnings_dir, git_toplevel  # noqa: E402
 
 # 硬编码阈值 (S3 plan-review 修复)。如有第二个项目需要不同周期再引入 CLI 参数或环境变量。
-STALE_DAYS_BUG = 90
 ORPHAN_DAYS = 180
 
 

@@ -143,11 +143,17 @@ def collect_learnings(learnings_dir):
 
 def resolve_learnings_dir(root):
     root = Path(root).resolve()
-    if (root / "docs" / "learnings").is_dir():
-        return root / "docs" / "learnings"
-    if root.name == "learnings":
+    candidate = root / "docs" / "learnings"
+    if candidate.is_dir():
+        return candidate
+    if root.name == "learnings" and root.is_dir():
         return root
-    return root
+    # No learnings directory found — return a non-existent path so collect_learnings
+    # gracefully returns [] (it checks .exists() first).
+    import sys as _sys
+    print(f"warning: no docs/learnings/ found under {root}; returning empty learnings list",
+          file=_sys.stderr)
+    return root / "_no_learnings_dir_"
 
 
 def main():
