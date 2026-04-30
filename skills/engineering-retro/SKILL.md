@@ -125,6 +125,10 @@ git log --since="$WINDOW_START" --format="%aN <%aE>" | sort -u
 
 Orient the report around **"you" (the current git user)** vs **teammates**. If solo project, skip the per-person breakdown.
 
+**Solo-mode flag:** if exactly one contributor in the window, set `solo_mode=true` and adjust downstream rendering:
+- Skip the "Per-Contributor (if team)" section in the report **entirely** — do not render an empty table.
+- In "What Went Well / Could Improve", frame observations in terms of work patterns ("you worked across N consecutive days") rather than coordination metrics.
+
 ## Step 4: Analyze by Category
 
 Categorize commits by type. Use conventional commit prefixes if available, otherwise infer from commit messages and changed files.
@@ -161,6 +165,25 @@ Before generating qualitative analysis, check for prior context.
 **Other prior context:**
 1. Prior retro reports — search for `Engineering Retro:` heading in `docs/` or project docs
 2. Prior retro action items — if a previous retro recommended specific improvements, check if the metrics show improvement
+
+### Baseline Mode (first-ever retro for a project)
+
+If no prior retro reports exist (search `docs/superpowers/retros/` and `docs/`), this is a **baseline retro**. Behavior changes:
+
+- The report header explicitly declares "Baseline retro — establishing initial metrics".
+- Lists 5-7 baseline indicators with current values AND target/alert thresholds:
+  - Test ratio
+  - Bug rate
+  - Churn rate
+  - Learnings produced (per phase or per period)
+  - structured-review P1s found per phase (if applicable)
+  - plan-review diff size (if applicable)
+  - Any project-specific indicator the user requests
+- The "Activity by Day" and "Breakdown by Category" sections render normally.
+- The "What Went Well / Could Improve" sections may include observations but **must not contain comparison language** ("improved", "regressed", "better than last week"). There is no prior data to compare to.
+- The "Action Items" section is permitted but should focus on **establishing measurement habits**, not improving against unknowns.
+
+Baseline mode is one-shot — the next retro automatically exits baseline and starts comparing against this report's numbers.
 
 **How prior knowledge affects the retro:**
 
@@ -238,11 +261,15 @@ Based on the patterns observed, suggest concrete next actions:
 | Bug rate | <N>% | ✓ Low / ⚠ Moderate / ✗ High |
 | Churn rate | <N> | ✓ Balanced / ⚠ High rework |
 
-### Per-Contributor (if team)
+### Per-Contributor (omit entirely when solo_mode=true)
+
+If multiple contributors:
 
 | Contributor | Commits | Added | Removed | Focus Areas |
 |-------------|---------|-------|---------|-------------|
 | <name> | <N> | <N> | <N> | features, tests |
+
+If solo_mode=true: skip this section. Do not render an empty table.
 
 ### Highlights
 
@@ -259,6 +286,18 @@ Based on the patterns observed, suggest concrete next actions:
 ### Action Items
 
 <concrete next steps, linked to available skills>
+
+### Baseline Established (only when in baseline mode)
+
+| Indicator | Current value | Target / Alert |
+|---|---|---|
+| Test ratio | <N>% | Hold ≥20%; alert if <15% |
+| Bug rate | <N>% | Hold <20%; alert if >30% |
+| Churn rate | <N> | Track; alert if outside 0.3-0.7 sustained |
+| Learnings per phase | <N> | Track; flat or rising = healthy reflection |
+| structured-review P1s per phase | <N> | Track; goal is downward over time |
+| Active-day concentration | <N> days for <M> commits | Track; sustained bursts → review process load |
+| <Custom indicator> | <value> | <threshold> |
 ```
 
 ## Step 7: Knowledge Capture
