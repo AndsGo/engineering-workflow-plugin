@@ -1,6 +1,6 @@
 # Engineering Workflow Guide
 
-三层工程栈使用指南。Superpowers 提供纪律底线，9 个自定义 skill 提供流程和工具。
+三层工程栈使用指南。Superpowers 提供纪律底线，10 个自定义 skill 提供流程和工具。
 
 ## 快速参考
 
@@ -17,6 +17,7 @@
 | 端到端浏览器测试 | "测试页面" / "e2e test" | e2e-browser-test |
 | 记录经验教训 | "compound" / "记录一下" | knowledge-compound |
 | 周复盘 | "retro" | engineering-retro |
+| 月度复盘 / 维护 learnings | "refresh learnings" / "audit learnings" | learnings-refresh |
 | 同步文档 | "update docs" / "同步文档" | document-sync |
 | 处理 PR 反馈 | "resolve PR comments" | resolve-pr-feedback |
 
@@ -219,7 +220,7 @@ ship-and-pr 完成后会提示:
 
 每条 learning 存储为 `docs/learnings/YYYY-MM-DD-<category>-<slug>.md`。
 
-v1.1 起 frontmatter 必须包含 `track` 和 `status`；`category` / `last-verified` 等可选。INDEX.md 是路由层（v1.1 手写，v1.2 起 `learnings-refresh` skill 自动生成）。
+v1.1 起 frontmatter 必须包含 `track` 和 `status`；`category` / `last-verified` 等可选。INDEX.md 是路由层（由 `learnings-refresh` skill 自动生成）。
 
 三种最小模板:
 
@@ -264,7 +265,7 @@ your-project/
 ├── CLAUDE.md                    ← 项目指令 (包含 skill routing 规则)
 ├── docs/
 │   ├── learnings/               ← knowledge-compound 写入
-│   │   ├── INDEX.md             ← 路由层（v1.1 手写，v1.2 起自动生成）
+│   │   ├── INDEX.md             ← 路由层（由 learnings-refresh 自动生成）
 │   │   ├── 2026-04-02-bug-session-token-expiry.md
 │   │   ├── 2026-04-02-pattern-retry-with-backoff.md
 │   │   ├── 2026-04-02-architecture-jwt-over-sessions.md
@@ -289,11 +290,11 @@ TDD 和 verification 是不可跳过的纪律。structured-review 和 security-a
 
 ### Q: docs/learnings/ 会不会越来越多？
 
-会。v1.1 提供了基础设施：
+会，但有 `learnings-refresh` skill 来管理：
+- 每月初手工触发"refresh learnings"
 - session-start hook 在 30+/50+ 阈值发出软信号（`LEARNINGS_THRESHOLD_INDEX` / `LEARNINGS_THRESHOLD_REFRESH` 可调）
-- 协议（`learnings-protocol.md`）定义了 archive / supersede / synthesize 的判断规则
-
-**v1.2 将 ship `learnings-refresh` skill** 来自动检测：cited 代码路径已删 / 同 category ≥3 条（可合并）/ 长期未碰 —— 但所有动作仍需用户逐行确认。在 v1.2 之前，参考协议手工 curate。
+- skill 自动检测：cited 代码路径已删 / 同 category ≥3 条（可合并）/ 长期未碰
+- 所有动作（archive / supersede / synthesize）需用户逐行确认 — 永不自动改动
 
 ### Q: 安全审计什么时候触发？
 

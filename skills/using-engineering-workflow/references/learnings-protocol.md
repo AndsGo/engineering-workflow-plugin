@@ -21,9 +21,7 @@ Any skill that reads, writes, or maintains `docs/learnings/` MUST follow this pr
 
 ## MAINTAIN Phase (periodic)
 
-The MAINTAIN phase is implemented by the `learnings-refresh` skill, which ships in plugin v1.2.
-
-Until v1.2 lands, projects can curate learnings manually against the rules below; v1.2 automates detection and recommendation while keeping all mutations user-confirmed.
+The MAINTAIN phase is implemented by the `learnings-refresh` skill (current).
 
 1. Triggered monthly, by user phrase ("refresh learnings", "audit our learnings"), or when session-start hook signals threshold crossed.
 2. Never auto-mutate. Detection is read-only; user confirms each action.
@@ -52,7 +50,7 @@ Existing learnings without frontmatter remain valid. Parsers default:
 |---|---|
 | `using-engineering-workflow` | meta — pins this protocol |
 | `knowledge-compound` | WRITE (primary) |
-| `learnings-refresh` (v1.2) | MAINTAIN (primary) |
+| `learnings-refresh` | MAINTAIN (primary) |
 | `structured-review` | READ + suggest WRITE |
 | `plan-review-personas` | READ |
 | `security-audit` | READ + suggest WRITE |

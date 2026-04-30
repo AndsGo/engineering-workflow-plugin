@@ -2,7 +2,7 @@
 
 Complete engineering workflow for Claude Code. Extends [Superpowers](https://github.com/obra/superpowers) with multi-role code review, knowledge accumulation, security audit, browser testing, PR feedback resolution, and document sync.
 
-**9 process skills + 2 enforcement hooks + 1 meta skill. Zero runtime dependencies.**
+**10 process skills + 2 enforcement hooks + 1 meta skill. Zero runtime dependencies.**
 
 ## Quick Start
 
@@ -118,6 +118,7 @@ Optional tools are checked at session start. Missing tools produce a one-line no
 | **ship-and-pr** | Pre-flight, commit, push, create PR | "ship it", "create PR" |
 | **security-audit** | OWASP Top 10 + STRIDE threat model | Auth/input/API/secrets changes |
 | **engineering-retro** | Git-based engineering retrospective | "retro", weekly review |
+| **learnings-refresh** | Maintain docs/learnings/ — detect stale, cluster, regenerate INDEX | Monthly, threshold-triggered, "refresh learnings" |
 | **e2e-browser-test** | Browser testing on diff-affected pages | "test the site", "e2e test" |
 | **resolve-pr-feedback** | Batch-process PR review comments | "resolve PR comments" |
 | **document-sync** | Sync docs to match shipped code | After shipping, "update docs" |
@@ -137,7 +138,7 @@ Optional tools are checked at session start. Missing tools produce a one-line no
 ```
 ┌─────────────────────────────────────────────────────────┐
 │ This Plugin: Process & Tools                             │
-│ 9 skills + 2 hooks + flow gates                         │
+│ 10 skills + 2 hooks + flow gates                        │
 │ Review → Ship → Document → Knowledge → Retro            │
 ├─────────────────────────────────────────────────────────┤
 │ Superpowers: Discipline (required dependency)            │
@@ -160,7 +161,7 @@ GATE 5: Session End → Knowledge   (always offer to capture learnings)
 
 ### Knowledge Loop
 
-Every analysis skill reads `docs/learnings/INDEX.md` first (when present), prefers 📚 synthesis docs, then targets specific learnings. Falls back to `Grep docs/learnings/` when INDEX is absent. The complete read/write/maintain contract is in `skills/using-engineering-workflow/references/learnings-protocol.md`. (The MAINTAIN-phase implementation `learnings-refresh` ships in plugin v1.2.)
+Every analysis skill reads `docs/learnings/INDEX.md` first (when present), prefers 📚 synthesis docs, then targets specific learnings. Falls back to `Grep docs/learnings/` when INDEX is absent. The complete read/write/maintain contract is in `skills/using-engineering-workflow/references/learnings-protocol.md`. (The MAINTAIN-phase implementation `learnings-refresh` is shipped — invoke via "refresh learnings".)
 
 ```
                     ┌─── knowledge-compound WRITES ───┐

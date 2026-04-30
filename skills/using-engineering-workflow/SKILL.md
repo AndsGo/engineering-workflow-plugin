@@ -86,9 +86,9 @@ All learning-touching skills MUST follow `references/learnings-protocol.md`.
 In short:
 - **READ:** INDEX-first → 📚 synthesis preferred → targeted reads → Grep fallback. Cite sources.
 - **WRITE:** suggest `knowledge-compound`, never write directly. Frontmatter required (`track`, `status`).
-- **MAINTAIN:** `learnings-refresh` skill (ships in v1.2). Until then, manual curation against the protocol is acceptable.
+- **MAINTAIN:** `learnings-refresh` skill — run monthly or when session-start signal fires.
 
-If `docs/learnings/INDEX.md` does not exist and the project has ≥30 learnings, consider hand-writing one (or wait for v1.2 to automate).
+If `docs/learnings/INDEX.md` does not exist and the project has ≥30 learnings, run `learnings-refresh` to auto-generate it.
 
 This is not optional. Prior knowledge lookup prevents repeating mistakes. Knowledge output prevents losing insights.
 

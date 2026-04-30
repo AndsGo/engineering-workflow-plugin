@@ -2,6 +2,37 @@
 
 All notable changes to this plugin are documented here. Written for users, not contributors.
 
+## [1.2.0] - 2026-04-30
+
+### Added
+
+- `learnings-refresh` skill — implements MAINTAIN phase of `learnings-protocol.md`.
+  Detects stale learnings (ref-missing, orphaned), clusters ≥3 same-category for
+  synthesis, regenerates INDEX.md. All actions user-confirmed.
+- 4 Python scripts (stdlib-only, Python 3.7+): parse_learnings, detect_stale,
+  cluster_by_category, generate_index.
+- 5 self-contained eval fixtures + evals.json for skill-creator validation.
+- 2 reference docs (decision-rules, synthesis-template).
+
+### Changed
+
+- `using-engineering-workflow` meta-skill: drops v1.2 forward-reference;
+  cites `learnings-refresh` as the available MAINTAIN tool.
+- README skill count: 9 → 10.
+- ARCHITECTURE Learnings Lifecycle: v1.2 forward-references replaced with
+  current-tense descriptions.
+- engineering-workflow-guide: skill table + naming convention + FAQ updated.
+
+### Compatibility
+
+- INDEX.md regeneration is safe: refuses to overwrite if it would drop a
+  non-empty section outside the preservation allowlist.
+- Existing learnings without frontmatter remain valid.
+- Skill is opt-in (triggered monthly or on threshold signal); no behavior
+  change for projects that don't use it.
+- Python 3.7+ required for the new skill (other plugin components remain
+  bash + markdown).
+
 ## [1.1.0] - 2026-04-30
 
 ### Added
