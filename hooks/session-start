@@ -68,6 +68,22 @@ if [ -d "docs/learnings" ]; then
   learnings_count=$(find docs/learnings -name "*.md" -not -path "*/archive/*" 2>/dev/null | wc -l | tr -d ' ')
 fi
 
+# --- Learnings threshold signals ---
+LEARNINGS_THRESHOLD_INDEX=${LEARNINGS_THRESHOLD_INDEX:-30}
+LEARNINGS_THRESHOLD_REFRESH=${LEARNINGS_THRESHOLD_REFRESH:-50}
+
+learnings_signal=""
+if [ "$learnings_count" -ge "$LEARNINGS_THRESHOLD_INDEX" ] && [ ! -f "docs/learnings/INDEX.md" ]; then
+  learnings_signal="${learnings_count} learnings without INDEX.md — consider running learnings-refresh (or hand-write INDEX until v1.2)"
+fi
+if [ "$learnings_count" -ge "$LEARNINGS_THRESHOLD_REFRESH" ]; then
+  if [ -n "$learnings_signal" ]; then
+    learnings_signal="${learnings_signal}; ${learnings_count} exceeds refresh threshold (${LEARNINGS_THRESHOLD_REFRESH})"
+  else
+    learnings_signal="${learnings_count} exceeds refresh threshold (${LEARNINGS_THRESHOLD_REFRESH}) — consider running learnings-refresh"
+  fi
+fi
+
 # --- Optional tools check ---
 optional_warnings=""
 if ! command -v agent-browser >/dev/null 2>&1; then
@@ -90,6 +106,10 @@ escape_for_json() {
 
 meta_escaped=$(escape_for_json "$meta_skill_content")
 state_info="LEARNINGS_COUNT: ${learnings_count}\\nSUPERPOWERS: ${superpowers_found}\\n${workflow_state}${optional_warnings}"
+if [ -n "$learnings_signal" ]; then
+  learnings_signal_escaped=$(escape_for_json "$learnings_signal")
+  state_info="${state_info}\\nLEARNINGS_SIGNAL: ${learnings_signal_escaped}"
+fi
 
 session_context="<ENGINEERING_WORKFLOW>\\nYou have the engineering-workflow plugin active.${superpowers_warning}\\n\\n**Below is the flow control meta-skill. Follow it for ALL engineering work:**\\n\\n${meta_escaped}\\n\\nWorkflow state: ${state_info}\\n</ENGINEERING_WORKFLOW>"
 
