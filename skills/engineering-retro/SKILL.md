@@ -126,7 +126,7 @@ git log --since="$WINDOW_START" --format="%aN <%aE>" | sort -u
 Orient the report around **"you" (the current git user)** vs **teammates**. If solo project, skip the per-person breakdown.
 
 **Solo-mode flag:** if exactly one contributor in the window, set `solo_mode=true` and adjust downstream rendering:
-- Skip the "Per-Contributor (if team)" section in the report **entirely** — do not render an empty table.
+- Skip the "Per-Contributor" section in the report **entirely** — do not render an empty table.
 - In "What Went Well / Could Improve", frame observations in terms of work patterns ("you worked across N consecutive days") rather than coordination metrics.
 
 ## Step 4: Analyze by Category
@@ -183,7 +183,7 @@ If no prior retro reports exist (search `docs/superpowers/retros/` and `docs/`),
 - The "What Went Well / Could Improve" sections may include observations but **must not contain comparison language** ("improved", "regressed", "better than last week"). There is no prior data to compare to.
 - The "Action Items" section is permitted but should focus on **establishing measurement habits**, not improving against unknowns.
 
-Baseline mode is one-shot — the next retro automatically exits baseline and starts comparing against this report's numbers.
+Baseline mode is one-shot — the next retro automatically exits baseline and starts comparing against this report's numbers. Detection is automatic via the search above — once this retro is saved, future runs will find it and skip baseline mode.
 
 **How prior knowledge affects the retro:**
 
