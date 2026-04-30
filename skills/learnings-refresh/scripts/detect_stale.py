@@ -23,13 +23,28 @@ ORPHAN_DAYS = 180
 
 
 def days_since(date_str):
+    """Days between today and date_str.
+
+    Returns 0 for missing/empty dates (parse_learnings substitutes
+    git_creation_date when frontmatter omits last-verified).
+    Returns sys.maxsize for malformed non-empty dates (treats as
+    maximally stale; warns to stderr).
+    Returns 0 for future dates (clamped; warns to stderr).
+    """
     if not date_str:
         return 0
     try:
         d = datetime.strptime(date_str, "%Y-%m-%d").date()
     except ValueError:
+        print(f"warning: unparseable last_verified date {date_str!r}; treating as stale",
+              file=sys.stderr)
+        return sys.maxsize
+    age = (date.today() - d).days
+    if age < 0:
+        print(f"warning: future last_verified date {date_str!r} (age={age}); clamping to 0",
+              file=sys.stderr)
         return 0
-    return (date.today() - d).days
+    return age
 
 
 def detect(project_root, learnings_dir):
