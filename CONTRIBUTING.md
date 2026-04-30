@@ -74,6 +74,7 @@ engineering-workflow-plugin/
 3. Add the skill to `skills/using-engineering-workflow/SKILL.md` routing table
 4. Update README.md skills table
 5. Update ARCHITECTURE.md if it introduces a new pattern
+6. If your skill reads or writes `docs/learnings/`, follow `skills/using-engineering-workflow/references/learnings-protocol.md` and cite it in your Step 0.
 
 ### Modifying hooks
 

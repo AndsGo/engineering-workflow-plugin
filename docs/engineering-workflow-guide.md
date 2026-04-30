@@ -219,6 +219,8 @@ ship-and-pr 完成后会提示:
 
 每条 learning 存储为 `docs/learnings/YYYY-MM-DD-<category>-<slug>.md`。
 
+v1.1 起 frontmatter 必须包含 `track` 和 `status`；`category` / `last-verified` 等可选。INDEX.md 是路由层（v1.1 手写，v1.2 起 `learnings-refresh` skill 自动生成）。
+
 三种最小模板:
 
 **Bug (最小):**
@@ -262,9 +264,11 @@ your-project/
 ├── CLAUDE.md                    ← 项目指令 (包含 skill routing 规则)
 ├── docs/
 │   ├── learnings/               ← knowledge-compound 写入
+│   │   ├── INDEX.md             ← 路由层（v1.1 手写，v1.2 起自动生成）
 │   │   ├── 2026-04-02-bug-session-token-expiry.md
 │   │   ├── 2026-04-02-pattern-retry-with-backoff.md
-│   │   └── 2026-04-02-architecture-jwt-over-sessions.md
+│   │   ├── 2026-04-02-architecture-jwt-over-sessions.md
+│   │   └── archive/             ← 已归档的 learnings
 │   └── superpowers/
 │       ├── specs/               ← brainstorming 写入
 │       │   └── 2026-04-02-notification-center-design.md
@@ -285,7 +289,11 @@ TDD 和 verification 是不可跳过的纪律。structured-review 和 security-a
 
 ### Q: docs/learnings/ 会不会越来越多？
 
-会。目前没有自动清理机制（这是有意的——先积累使用数据，再设计优化）。当 learnings 超过 30 条时，建议手动运行一次 knowledge-compound 的 Refresh Cycle。
+会。v1.1 提供了基础设施：
+- session-start hook 在 30+/50+ 阈值发出软信号（`LEARNINGS_THRESHOLD_INDEX` / `LEARNINGS_THRESHOLD_REFRESH` 可调）
+- 协议（`learnings-protocol.md`）定义了 archive / supersede / synthesize 的判断规则
+
+**v1.2 将 ship `learnings-refresh` skill** 来自动检测：cited 代码路径已删 / 同 category ≥3 条（可合并）/ 长期未碰 —— 但所有动作仍需用户逐行确认。在 v1.2 之前，参考协议手工 curate。
 
 ### Q: 安全审计什么时候触发？
 
@@ -311,3 +319,7 @@ TDD 和 verification 是不可跳过的纪律。structured-review 和 security-a
 ### Q: document-sync 会重写我的 CHANGELOG 吗？
 
 绝对不会。它只做措辞润色（voice polish），永远不会删除、重排或重新生成 CHANGELOG 条目。如果发现条目可能有误，会问你而不是自动修复。
+
+### Q: Learnings Protocol 是什么？
+
+`skills/using-engineering-workflow/references/learnings-protocol.md` 是版本化的契约，定义所有 learning-touching skill 必须遵守的 READ / WRITE / MAINTAIN 三阶段。9 个 skill 都引用它（meta + 7 consumer + document-sync），不重复散文。修改契约是 plugin 的破坏性变更。

@@ -160,7 +160,7 @@ GATE 5: Session End → Knowledge   (always offer to capture learnings)
 
 ### Knowledge Loop
 
-Every analysis skill reads `docs/learnings/` before starting and offers to write new learnings after finishing:
+Every analysis skill reads `docs/learnings/INDEX.md` first (when present), prefers 📚 synthesis docs, then targets specific learnings. Falls back to `Grep docs/learnings/` when INDEX is absent. The complete read/write/maintain contract is in `skills/using-engineering-workflow/references/learnings-protocol.md`. (The MAINTAIN-phase implementation `learnings-refresh` ships in plugin v1.2.)
 
 ```
                     ┌─── knowledge-compound WRITES ───┐
