@@ -5,7 +5,6 @@ Outputs JSON to stdout. Stdlib-only. Python 3.7+.
 """
 import argparse
 import json
-import os
 import re
 import subprocess
 import sys
@@ -19,6 +18,9 @@ FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
 
 # W2: tighten code-ref regex
 # Require: at least one path separator (/) AND extension from allowlist (excluding .md)
+# CONSTRAINT: requires POSIX-style path separator (/). Windows-authored
+# learnings citing `pkg\foo\bar.go` will not be detected. Project convention:
+# always use / in markdown code-refs even on Windows.
 CODE_REF_EXTENSIONS = {"go", "py", "ts", "tsx", "js", "jsx", "rs", "java", "c", "cpp", "h", "hpp",
                       "rb", "php", "sh", "bash", "yaml", "yml", "toml", "json", "sql", "graphql"}
 _ext_pattern = "|".join(re.escape(e) for e in CODE_REF_EXTENSIONS)
@@ -111,11 +113,13 @@ def parse_file(path, learnings_dir, toplevel):
         try:
             rel = path.resolve().relative_to(toplevel).as_posix()
         except ValueError:
+            print(f"warning: path {path} is outside git toplevel {toplevel}; using absolute path", file=sys.stderr)
             rel = str(path)
     else:
         try:
             rel = path.resolve().relative_to(learnings_dir.parent).as_posix()
         except ValueError:
+            print(f"warning: path {path} is outside learnings_dir.parent {learnings_dir.parent}; using absolute path", file=sys.stderr)
             rel = str(path)
     return {
         "path": rel,
