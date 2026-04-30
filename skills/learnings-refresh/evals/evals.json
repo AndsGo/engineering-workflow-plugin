@@ -1,0 +1,40 @@
+{
+  "skill_name": "learnings-refresh",
+  "evals": [
+    {
+      "id": 1,
+      "name": "empty-project",
+      "prompt": "Audit our learnings.",
+      "files": ["fixtures/eval-1-empty"],
+      "expected": "parse_learnings returns []; detect_stale returns []; cluster_by_category returns []; generate_index aborts or produces minimal INDEX"
+    },
+    {
+      "id": 2,
+      "name": "no-frontmatter-treated-as-defaults",
+      "prompt": "Refresh our learnings.",
+      "files": ["fixtures/eval-2-no-frontmatter"],
+      "expected": "parse_learnings returns 5 entries with track=knowledge, status=active defaults; no signals from detect_stale; no clusters"
+    },
+    {
+      "id": 3,
+      "name": "medium-project-mirror",
+      "prompt": "Run a refresh.",
+      "files": ["fixtures/eval-3-medium-project"],
+      "expected": "parse_learnings returns 12 entries; cluster_by_category returns 1 cluster (pattern, 4 members); INDEX preservation respected"
+    },
+    {
+      "id": 4,
+      "name": "ref-missing-flagged",
+      "prompt": "Audit our learnings.",
+      "files": ["fixtures/eval-4-ref-missing"],
+      "expected": "detect_stale flags 1 learning with kind=ref-missing; user-confirm gate before any mutation"
+    },
+    {
+      "id": 5,
+      "name": "cluster-synthesis-prompt",
+      "prompt": "Refresh learnings, look for synthesis opportunities.",
+      "files": ["fixtures/eval-5-cluster"],
+      "expected": "cluster_by_category returns 1 cluster (pattern, 4 members)"
+    }
+  ]
+}
