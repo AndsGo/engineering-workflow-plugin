@@ -6,7 +6,7 @@ All notable changes to this plugin are documented here. Written for users, not c
 
 ### Added
 
-- `learnings-protocol.md` — formal versioned contract for read/write/maintain across all learning-touching skills. Pinned in meta-skill, cited by 7 consumer skills + `document-sync` (9 files total).
+- `learnings-protocol.md` — formal versioned contract for read/write/maintain across all learning-touching skills. Cited by 1 meta-skill + 7 consumer skills + `document-sync` (9 files total).
 - `knowledge-compound` now emits frontmatter (`track`, `status`; optional `category` / `last-verified` / `superseded-by`).
 - Forward-reference to `learnings-refresh` skill (ships in v1.2 — implements MAINTAIN phase).
 
@@ -14,7 +14,7 @@ All notable changes to this plugin are documented here. Written for users, not c
 
 - `engineering-retro`: explicit baseline mode for first-ever retro (no comparison language); per-contributor section omitted entirely under solo mode.
 - session-start hook: signals when LEARNINGS_COUNT exceeds 30 (no INDEX) or 50 (refresh recommended). Both thresholds env-overridable. Signal JSON-escaped to prevent injection.
-- All 7 learning-consuming skills + `document-sync` cite `learnings-protocol.md` in their Step 0 instead of duplicating prose.
+- All 7 learning-consuming skills + `document-sync` (and the meta-skill) cite `learnings-protocol.md` instead of duplicating prose.
 
 ### Compatibility
 
