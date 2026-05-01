@@ -183,8 +183,14 @@ Read each documentation file and cross-reference against the diff.
 ```bash
 lines=$(wc -l < CLAUDE.md)
 chars=$(wc -m < CLAUDE.md)
-# Token estimate: chars/4 for English/code-heavy; chars/2 for CJK-heavy.
-# Heuristic: if >30% of chars are non-ASCII, use chars/2.
+non_ascii=$(LC_ALL=C grep -o '[^[:print:][:space:]]' CLAUDE.md | wc -l)
+ratio=$(( chars > 0 ? non_ascii * 100 / chars : 0 ))
+if [ "$ratio" -gt 30 ]; then
+  estimated_tokens=$(( chars / 2 ))   # CJK-heavy
+else
+  estimated_tokens=$(( chars / 4 ))   # English / code-heavy
+fi
+echo "lines=$lines chars=$chars non_ascii_ratio=${ratio}% estimated_tokens=$estimated_tokens"
 ```
 
 Caps are **token estimates**, not line counts:
