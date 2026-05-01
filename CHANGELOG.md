@@ -2,6 +2,46 @@
 
 All notable changes to this plugin are documented here. Written for users, not contributors.
 
+## [1.3.0] - 2026-05-01
+
+### Added
+
+- `document-sync` skill: new `Step 4.7: CLAUDE.md Hygiene Audit` —
+  size budget (1500/3000 token caps), 6 inflation patterns, removal-on-
+  feature-removal proposal, date-stamp staleness flag. Two modes:
+  Auto (default, bypassable) and forced full-sweep.
+- Diff-driven section targeting (F1): the skill chooses CLAUDE.md
+  audit checks based on what changed in the diff.
+- Counted enumerations check (F2): detects `(N total)` or `N skills`
+  mismatches against actual bullet count.
+- Path/package reference validation (F3): backtick-quoted paths in
+  CLAUDE.md must exist in the repo.
+- 3 behavior-level fixtures under `skills/document-sync/tests/fixtures/`
+  for empirical acceptance checks.
+
+### Changed
+
+- `document-sync` Step 5 prepended with bias-toward-replacement
+  preamble: 3 hygiene questions before adding new content to CLAUDE.md.
+- Auto-update vs ask gate is TIGHTER for CLAUDE.md: removal/deletion
+  always asks; only mechanical replacements (count fix, clear rename
+  from diff) stay auto.
+- Hard rule: any operation that REMOVES content from CLAUDE.md MUST
+  ask the user.
+
+### Compatibility
+
+- All other docs (README, ARCHITECTURE, CONTRIBUTING, etc.) audit
+  behavior unchanged. Only the CLAUDE.md sub-section + new Step 4.7
+  are touched.
+- CHANGELOG preservation rule (Step 7) unchanged.
+- Existing CLAUDE.mds may already exceed soft cap. First run on such
+  projects warns + lists prune candidates; user opts in per row.
+- Hygiene Audit defaults to bypass when diff doesn't touch CLAUDE.md
+  AND file under soft cap; `--full-sweep` overrides for monthly
+  reviews and pre-release checks.
+- No new dependencies; pure prose change to one skill.
+
 ## [1.2.0] - 2026-04-30
 
 ### Added
