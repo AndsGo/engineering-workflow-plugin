@@ -129,10 +129,34 @@ Read each documentation file and cross-reference against the diff.
 - Are test commands and dev scripts accurate?
 - Do workflow descriptions match current process?
 
-### CLAUDE.md / AGENTS.md
-- Does the project structure section match the actual file tree?
-- Are listed commands and scripts accurate?
-- Do build/test instructions match what's in package.json (or equivalent)?
+### CLAUDE.md / AGENTS.md (high-stakes — drives Claude Code session behavior)
+
+**Why elevated:** unlike README which a human reads, CLAUDE.md is loaded into every Claude Code session as system instructions. Drift here changes Claude's actual behavior, not just documentation accuracy. Token cost is paid every session, on every prompt.
+
+**Diff-driven section targeting** — choose checks based on what changed:
+
+| Diff touches | Audit these CLAUDE.md sections |
+|---|---|
+| `api/`, route handlers | Endpoint enumerations + counts |
+| `Makefile`, `package.json`, `Cargo.toml`, `pyproject.toml` | Build/Test Commands |
+| Top-level dir add/rename/delete | Project Structure paragraph |
+| Public function signatures | Architecture paragraphs (grep referenced symbols) |
+| Config schema files | JSON/YAML code-block examples |
+
+**Counted enumerations** — find `(N total)` / `N skills` / `N endpoints` patterns; count actual bullets that follow; flag count mismatches.
+
+**Path/package references** — extract every backtick-quoted path (`agent/`, `cli/commands/main.go`); verify each exists; flag missing.
+
+**Endpoint route validation** — if HTTP routes enumerated, grep code for route definitions; flag missing-from-doc or missing-from-code.
+
+**Symbol references** — function/method names mentioned in prose (e.g., `Foo.NewBar(...)`); grep code for definition; flag if absent or signature differs.
+
+**Auto-update vs ask gate is TIGHTER for CLAUDE.md** — pruning ALWAYS asks; only mechanical replacements are auto:
+
+- Auto-update: count-only corrections; rename clearly inferable from the diff (path or command renamed); table-row text fix that doesn't delete a row
+- **Ask** (do not auto-update): missing-path removal, section deletion, list-item removal, link-out / move-to-doc, removal-on-feature-removal, any addition that grows file >5% or pushes over soft cap (1500 estimated tokens)
+
+**Hard rule:** any operation that REMOVES content from CLAUDE.md MUST ask the user. Pruning requires human judgment about what context Claude actually needs in-session.
 
 ### Other .md files
 - Read the file, determine its purpose
