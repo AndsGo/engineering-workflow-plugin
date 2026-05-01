@@ -154,7 +154,7 @@ Read each documentation file and cross-reference against the diff.
 **Auto-update vs ask gate is TIGHTER for CLAUDE.md** — pruning ALWAYS asks; only mechanical replacements are auto:
 
 - Auto-update: count-only corrections; rename clearly inferable from the diff (path or command renamed); table-row text fix that doesn't delete a row
-- **Ask** (do not auto-update): missing-path removal, section deletion, list-item removal, link-out / move-to-doc, removal-on-feature-removal, any addition that grows file >5% or pushes over soft cap (1500 estimated tokens)
+- **Ask** (do not auto-update): missing-path removal, section deletion, list-item removal, link-out / move-to-doc, removal-on-feature-removal, any addition that grows file >5% or pushes over the CLAUDE.md soft cap (~1500 estimated tokens; defined in Step 4.7 below)
 
 **Hard rule:** any operation that REMOVES content from CLAUDE.md MUST ask the user. Pruning requires human judgment about what context Claude actually needs in-session.
 
