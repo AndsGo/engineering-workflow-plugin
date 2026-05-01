@@ -253,6 +253,14 @@ User decides per candidate. Approved actions apply in Step 5.
 
 ## Step 5: Apply Auto-Updates
 
+**Before adding new content to CLAUDE.md, check:**
+
+1. Is there an existing section this belongs to? (Update inline, don't append a new section unless one is genuinely needed)
+2. Is the new content actually needed in every Claude Code session? Or could it be linked from a separate doc?
+3. Will this content be stale in 6 months? (If yes, link to a versioned doc instead of inlining)
+
+Bias toward replacing/linking-out, not appending.
+
 Make all factual corrections directly using the Edit tool.
 
 For each file modified, output a one-line summary:
