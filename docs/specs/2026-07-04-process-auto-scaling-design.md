@@ -177,6 +177,9 @@ Plan-review flagged that a self-authored, self-graded fixture walkthrough is cir
 14. **Blind isolation broadened + runs ≥5** (§9) — classifier must not read `docs/plans/`/`docs/specs/`/`tests/` (the key lived there); n bumped 3→5 for the under-classification band (feasibility + adversarial round-2).
 15. **Opt-in tradeoff acknowledged** (§9) — benefit is deferred behind migration and unmeasurable until v1.5 shadow-logging; workspace-CLAUDE.md migration is the activation path.
 
+**Eval-driven refinement (during execution, 2026-07-04):**
+16. **T0 excludes runtime logic changes.** The blind eval (§9) caught scenario S5 (a one-line off-by-one fix with an existing test suite) *flapping* T0/T1 across runs — the T0/T1 boundary for a tiny code fix was underspecified. Rule 0's T0 row + signals were tightened to "**any change to runtime behavior/logic is ≥T1**" (a one-line bugfix is T1, not T0); re-running the eval gave a stable, correct classification on all 6 scenarios. This is the intended loop: blind eval → finding → tighten rubric → re-run → stable.
+
 ## 11. Self-Consistency Note
 
 By its own model, this change is **T2 with the security/irreversibility overlay engaged** (it rewrites the plugin's core contract and affects every consumer's routing — E-1-class blast radius). Accordingly it went through the full flow — and plan-review actually returned **RETHINK**, forcing this revision. The framework not only classified itself as heavyweight; its own adversarial gate caught real design blockers in the plan to build it, and the fixes made the design materially safer. That is the intended demonstration, and it worked.
