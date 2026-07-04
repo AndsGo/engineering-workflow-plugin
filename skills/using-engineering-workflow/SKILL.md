@@ -25,7 +25,7 @@ Classify the **work-item** (the user's current request/deliverable, not a single
 
 | Tier | Profile | Process (beyond the floor) |
 |---|---|---|
-| **T0 Trivial** | single-point, reversible, unambiguous, oracle already exists, **and no runtime logic/behavior change** (version bump, typo, doc one-liner, comment) | Just do it. Skip Rules 1–3. **Silent.** |
+| **T0 Trivial** | single-point, reversible, unambiguous, oracle already exists, **and no runtime logic/behavior change** (version bump, typo, doc one-liner, comment) | Just do it. Skip the Gates 1–3 (route via Rule 1 as normal). **Silent.** |
 | **T1 Standard** | bounded, 1–few files, target clear, oracle exists/cheap | Announce. spec-lite + one failing test as oracle + self-review + ONE `structured-review`. Skip brainstorming / plan-review / subagent choreography. |
 | **T2 Substantial** | multi-file, real design choices, intent must be excavated, or oracle must be designed | Announce. Full flow: `superpowers:brainstorming` → `superpowers:writing-plans` → `plan-review-personas` → `superpowers:subagent-driven-development` → `structured-review`. |
 
