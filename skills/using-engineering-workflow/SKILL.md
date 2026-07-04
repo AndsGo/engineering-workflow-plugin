@@ -17,6 +17,46 @@ This plugin provides 9 specialized skills that extend Superpowers with process a
 
 ## Flow Control Rules
 
+### Rule 0: Triage — classify BEFORE routing (MUST run first)
+
+Classify the **work-item** (the user's current request/deliverable, not a single file edit) before applying Rules 1–6. The tier sets HOW MUCH process applies. **Auto-scaling scales scaffolding (HOW); it never scales the floor (0.3) or the escalation conditions (0.4).**
+
+#### 0.1 Tiers and the process each runs
+
+| Tier | Profile | Process (beyond the floor) |
+|---|---|---|
+| **T0 Trivial** | single-point, reversible, unambiguous, oracle already exists | Just do it. Skip Rules 1–3. **Silent.** |
+| **T1 Standard** | bounded, 1–few files, target clear, oracle exists/cheap | Announce. spec-lite + one failing test as oracle + self-review + ONE `structured-review`. Skip brainstorming / plan-review / subagent choreography. |
+| **T2 Substantial** | multi-file, real design choices, intent must be excavated, or oracle must be designed | Announce. Full flow: `superpowers:brainstorming` → `superpowers:writing-plans` → `plan-review-personas` → `superpowers:subagent-driven-development` → `structured-review`. |
+
+Signals (highest wins; round up ONLY when genuinely uncertain — over-escalating everything defeats the purpose): **surface area** (>~5 files or >1 subsystem → T2), **ambiguity** (intent must be excavated → T2), **verifiability** (oracle must be designed → T2). Security/irreversibility is NOT a size signal — it is the floor overlay (0.3 #6 / 0.4 E-1).
+
+#### 0.2 Precedence — conservative wins
+
+If a tier conflicts with the consumer's own `CLAUDE.md` rule or a Superpowers Iron Law, **the stricter / higher-tier / more-review instruction wins.** An unmigrated consumer that says "always review" keeps it — Rule 0 only ever *adds* escalation. (Auto-scaling is thus safe-by-default and opt-in.)
+
+#### 0.3 Invariant floor — every tier, never scaled away
+
+1. Define "correct" before implementing (≥1 sentence). Two valid interpretations → resolve with the user, don't guess.
+2. Have a check that can **actually fail** (test / fixture / for docs-only: a concrete independently-checkable assertion or explicit human review). A tautology is a broken oracle → STOP.
+3. Verify with evidence before "done" (`superpowers:verification-before-completion`).
+4. Never auto-execute irreversible / outward-facing actions (push, deploy, migration, delete, external send) — confirm first.
+5. Learnings discipline (Rule 4) applies.
+6. **Completion-time checkpoint (forcing function):** before claiming done, re-scan the **actual diff** against 0.4 — independent of the starting tier. If a condition fires, escalate, **announce it**, and run the required gate before completion. (Catches a diff that turned out to touch a security path, scope that grew mid-task, or a surprise irreversible op — the pre-diff classification sees none.) **Ordering:** this checkpoint runs *before* any floor-#4 irreversible/outward-facing action, so E-1's `security-audit` fires before a push/deploy, never after — closing the silent-T0 seam.
+
+#### 0.4 Escalation conditions (checked at the 0.3 #6 checkpoint; one-directional)
+
+| # | Condition (vs the actual diff) | Forced action | Tunable |
+|---|---|---|---|
+| E-1 | touches a security path: auth, secrets/credentials/keys/tokens/session, input validation, public API, crypto, SQL/query, file-path/upload, deserialization, secret-bearing config | **≥T2 + mandatory `security-audit`** + human approval before the irreversible step | **No** — consumers may extend the list, not disable it |
+| E-2 | cumulative files > ~5, or a 2nd subsystem involved | escalate to **T2**; plan-review before continuing | upward only, hard floor |
+| E-3 | a test that cannot fail / was weakened to pass | **STOP** — broken oracle | No |
+| E-4 | diff performs a surprise irreversible/destructive op (migration, delete/drop, mass rewrite, force-push) | escalate to **≥T2** + human approval before the irreversible step | No |
+
+#### 0.5 Announce
+
+T1+ emit before acting: `Tier: T<n> — <signals> → <process>`. **T0 is silent** (still obeys the floor, including the 0.3 #6 checkpoint). Checkpoint escalations are always announced. Honor overrides verbatim ("treat as T2" / "run full").
+
 ### Rule 1: Skill Routing (MUST follow)
 
 Match the user's intent to the correct skill. Check this routing table BEFORE responding:
@@ -40,6 +80,14 @@ Match the user's intent to the correct skill. Check this routing table BEFORE re
 ### Rule 2: Flow Sequence Gates
 
 These transitions are enforced. Do not skip forward without completing the prior step.
+
+**Gates apply per the work-item's tier (Rule 0.1), subject to conservative-wins precedence (Rule 0.2):**
+- **T0** — skip Gates 1–3 (floor still applies, incl. the Rule 0.3 #6 checkpoint).
+- **T1** — Gate 2/3 in light form (one `structured-review`); Gate 1 skipped.
+- **T2** — Gates 1–4 in full.
+- **Security/irreversibility overlay (Rule 0.4 E-1)** — adds mandatory `security-audit` + human approval before the irreversible step, on top of whatever tier applies.
+
+The gate descriptions below are the **T2 baseline**; lighter tiers apply the subset above. A stricter consumer rule always wins.
 
 ```
 GATE 1: Plan → Plan Review
@@ -68,7 +116,7 @@ GATE 5: Session End → Knowledge Capture
 
 ### Rule 3: Anti-Skip Enforcement
 
-These thoughts mean STOP — you are about to skip a flow gate:
+At **T1+**, these thoughts mean STOP — you are about to skip a flow gate. (At **T0** the gates are absent by classification, not rationalization — but the Rule 0.3 floor still holds, including the #6 checkpoint.)
 
 | Thought | Required action |
 |---------|----------------|
@@ -91,6 +139,8 @@ In short:
 If `docs/learnings/INDEX.md` does not exist and the project has ≥30 learnings, run `learnings-refresh` to auto-generate it.
 
 This is not optional. Prior knowledge lookup prevents repeating mistakes. Knowledge output prevents losing insights.
+
+Rule 4 is an **invariant floor** item (Rule 0.3 #5): it applies at every tier, T0 included.
 
 ### Rule 5: RETHINK Limit
 
