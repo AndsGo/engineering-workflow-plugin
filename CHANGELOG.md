@@ -2,6 +2,21 @@
 
 All notable changes to this plugin are documented here. Written for users, not contributors.
 
+## [1.4.0] - 2026-07-04
+
+### Added
+- **Process auto-scaling** in `using-engineering-workflow`: a new Rule 0 Triage classifies each work-item T0–T2 and applies a matching subset of the workflow gates — trivial changes skip ceremony, substantial changes get the full flow.
+- **Invariant floor** at every tier, including a **completion-time checkpoint** that re-scans the actual diff before "done" — so a change that turns out to touch a security path or grow in scope is caught and escalated even if it started trivial.
+- **Non-tunable security escalation** (auth/secrets/input/API/crypto/… → mandatory security-audit) and a broken-oracle STOP.
+- **Conservative-wins precedence:** existing projects keep their current behavior; auto-scaling's lightening is opt-in.
+- Blind, held-out classification eval for Rule 0.
+
+### Changed
+- Flow Sequence Gates (Rule 2) and Anti-Skip Enforcement (Rule 3) are now **tier-conditional** rather than unconditional.
+
+### Compatibility
+- Backward-compatible by design: an unmigrated project's stricter rules win, so behavior does not silently loosen. No config file added.
+
 ## [1.3.0] - 2026-05-01
 
 ### Added

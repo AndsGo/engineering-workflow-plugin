@@ -4,15 +4,15 @@
     "name": "Engineering Workflow Contributors"
   },
   "metadata": {
-    "description": "Engineering workflow plugin marketplace. Provides structured code review, knowledge accumulation with full lifecycle, security audit, and release automation on top of Superpowers.",
-    "version": "1.3.0"
+    "description": "Engineering workflow plugin marketplace. Provides process auto-scaling (per-work-item tiering), structured code review, knowledge accumulation with full lifecycle, security audit, and release automation on top of Superpowers.",
+    "version": "1.4.0"
   },
   "plugins": [
     {
       "name": "engineering-workflow",
       "source": "./",
-      "description": "Complete engineering workflow: multi-role code review, knowledge accumulation with full lifecycle (READ/WRITE/MAINTAIN via learnings-refresh skill), security audit, browser testing, PR feedback resolution, and document sync. Extends Superpowers with process and tool capabilities.",
-      "version": "1.3.0",
+      "description": "Complete engineering workflow: process auto-scaling (per-work-item tiering), multi-role code review, knowledge accumulation with full lifecycle (READ/WRITE/MAINTAIN via learnings-refresh skill), security audit, browser testing, PR feedback resolution, and document sync. Extends Superpowers with process and tool capabilities.",
+      "version": "1.4.0",
       "author": {
         "name": "Engineering Workflow Contributors"
       },

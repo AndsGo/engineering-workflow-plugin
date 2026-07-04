@@ -194,6 +194,18 @@ Brainstorm → Plan → Review Plan → Execute (TDD) → Browser Test
                                     Knowledge Compound ← Retro
 ```
 
+## Process Auto-Scaling (v1.4)
+
+`using-engineering-workflow` classifies each work-item into a tier and applies a matching amount of process — trivial changes skip ceremony, substantial ones get the full flow.
+
+- **T0 Trivial** — version bump, typo, doc one-liner (no runtime logic change): just do it, silently.
+- **T1 Standard** — bounded bugfix/feature: spec-lite + one test + one `structured-review`.
+- **T2 Substantial** — multi-file / real design choices / oracle must be designed: full flow (brainstorming → writing-plans → plan-review-personas → subagent-driven-development → structured-review).
+
+An **invariant floor** holds at every tier (define "correct" first; a check that can actually fail; evidence before "done"; never auto-execute irreversible/outward-facing actions; learnings discipline), plus a **completion-time checkpoint** that re-scans the actual diff before "done": a change that turns out to touch a security path (→ mandatory `security-audit`), grow past ~5 files (→ plan-review), or perform a surprise irreversible op (→ human approval) is caught and escalated even if it started trivial — and the checkpoint runs *before* any push/deploy. T1+ work announces its tier so you can veto a misclassification in one glance.
+
+> **Migration (v1.4):** Routing now auto-scales by tier (T0–T2). By conservative-wins precedence, an unmigrated project keeps its current behavior — if your `CLAUDE.md` says "always review," that still wins. To opt into lighter handling of small changes, trim your duplicated always-full routing to a pointer at `using-engineering-workflow`. Security-touching changes always escalate (non-tunable). No config file required.
+
 ## Origin
 
 This plugin extracts and fuses patterns from three open-source projects:
