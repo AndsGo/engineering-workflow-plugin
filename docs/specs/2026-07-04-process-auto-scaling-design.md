@@ -5,7 +5,7 @@
 **Targets:** plugin v1.4 (`using-engineering-workflow` skill restructure; docs; classification fixtures)
 **Driver:** The plugin's flow control (`using-engineering-workflow`) is **maximally rigid** — a flat routing table plus 5 unconditional gates. Every non-trivial change pays the full toll (brainstorm → plan → plan-review → subagent-driven → structured-review → …), regardless of blast radius. This session produced a live example: a 4-sentence skill (`grill-me`) was routed through the same heavyweight pipeline that produced document-sync v2's 406-line spec + 1162-line plan. As models get stronger, prescribing *how* to execute (micro-step choreography) adds friction and can anchor the model below its own judgment; the durable value moves to *what must be true* (correct target, an oracle that can fail, adversarial verification of the gap). The plugin should scale its own process weight to the task.
 
-> **Design provenance:** The core model (T0–T3 tiers, invariant floor, one-directional tripwires, announce-the-tier) was co-designed with the user in a strategic discussion prior to this spec. Default decisions made while the user was away are flagged **[DEFAULT — confirm]** for review.
+> **Design provenance:** The core model (T0–T3 tiers, invariant floor, one-directional tripwires, announce-the-tier) was co-designed with the user in a strategic discussion prior to this spec. The five open questions in §10 were **resolved by the user on 2026-07-04** ("go with your recommendations"); §10 now records the decisions, and the affected sections (§6, §7, §8) reflect them.
 
 ## 1. Goal
 
@@ -91,17 +91,17 @@ Auto-**downgrade** is allowed only before work starts, from the initial classifi
 
 | # | Observed fact | Forced action |
 |---|---|---|
-| T-1 | diff touches security-sensitive paths (auth, secrets/credentials, input validation, API surface, crypto, secret-bearing config) | escalate to **T3**; `security-audit` becomes mandatory |
+| T-1 | diff touches security-sensitive paths: auth/authn/authz, secrets/credentials/keys/tokens/session, input validation & sanitization, public API surface (endpoints/handlers), crypto, SQL/query construction, file path & upload handling, deserialization, secret-bearing config (`.env`, etc.) | escalate to **T3**; `security-audit` becomes mandatory |
 | T-2 | files touched exceed ~5, or a second subsystem gets involved | escalate to at least **T2**; run plan-review before continuing |
 | T-3 | a test was written that cannot fail, or a test was weakened to make it pass | **STOP** — the oracle is broken; fix the check before proceeding |
 | T-4 | a second valid interpretation of the target is discovered mid-task | bounce back to spec/clarify (do not guess) |
 | T-5 | actual reversibility turns out worse than assumed at classification | escalate one tier |
 
-**[DEFAULT — confirm]** thresholds: "~5 files" for T-2 and the security path list for T-1 are proposed defaults; both should be tunable per consumer project.
+Thresholds ("~5 files" for T-2, the T-1 security path list) are project-tunable defaults — a consumer may override them in its own CLAUDE.md.
 
 ## 7. Announce-the-Tier Contract
 
-At the start of any task that enters the workflow, emit one line before acting:
+At the start of any **T1+** task, emit one line before acting:
 
 ```
 Tier: T<n> — <one-line signal reading> → <process I will run>
@@ -109,7 +109,9 @@ Tier: T<n> — <one-line signal reading> → <process I will run>
 
 Example: `Tier: T1 — reversible, 2 files, oracle exists → spec-lite + 1 test + 1 structured-review.`
 
-This gives the user a near-zero-cost veto: a wrong downgrade is caught in one glance and corrected in one sentence. It recovers most of the control of an explicit `--light/--full` switch without the friction, while keeping the default fully automatic.
+**T0 is silent** — a trivial change announcing its triage would itself be ceremony noise, which contradicts the goal. T0 still obeys the invariant floor (§5); it just doesn't narrate. If a tripwire (§6) later escalates a T0/T1 task, the escalation IS announced (the upgrade is the noteworthy event).
+
+The announce line gives the user a near-zero-cost veto: a wrong downgrade is caught in one glance and corrected in one sentence. It recovers most of the control of an explicit `--light/--full` switch without the friction, while keeping the default fully automatic. **Manual override:** the user may pin a task with a phrase like "treat as T2" / "run this full" (upgrade) — honored verbatim.
 
 ## 8. Integration — File Changes
 
@@ -121,7 +123,7 @@ This gives the user a near-zero-cost veto: a wrong downgrade is caught in one gl
 | `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json` | Bump to 1.4.0; refresh descriptions to mention auto-scaling. |
 | `skills/using-engineering-workflow/tests/` (new) | Classification fixtures — see §9. |
 
-**Backward compatibility:** existing consumers keep working. The floor is stricter-or-equal to today's correctness behavior; only the *scaffolding* becomes conditional. A consumer that wants the old always-full behavior can pin every task to T2+ (documented escape hatch).
+**Backward compatibility:** existing consumers keep working. The floor is stricter-or-equal to today's correctness behavior; only the *scaffolding* becomes conditional. A consumer that wants the old always-full behavior can pin every task to T2+ — documented as a convention (a line in their CLAUDE.md, or the per-task "treat as T2" override phrase). **No config file / flag is added in v1.4** (YAGNI); a structured config knob is a v1.5+ option only if demand appears.
 
 ## 9. Test Strategy
 
@@ -138,13 +140,13 @@ Behavior-level fixtures, each a short task description + the expected tier + exp
 
 **Verification gate (anti-self-certification):** each fixture's pass requires the classification output to literally contain the tier token, the triggering signal, and (for tripwire fixtures) the escalation phrase — no prose-only "looks right."
 
-## 10. Open Questions for User Review
+## 10. Resolved Decisions (user approved 2026-07-04)
 
-1. **Q1 Placement** — spec assumes **front-door in `using-engineering-workflow`** (not a standalone skill, not consumer-CLAUDE.md). Confirm?
-2. **Tripwire thresholds** (§6) — is "~5 files" the right T-2 boundary? Is the T-1 security-path list complete for your consumers?
-3. **Escape hatch** — is "pin every task to T2+ to get old behavior" the migration story you want, or should the plugin ship a config flag?
-4. **Announce verbosity** — one line per task (§7) acceptable, or too noisy for T0 trivial changes (option: silent on T0, announce T1+)?
-5. **Consumer migration** — should v1.4 also update *this workspace's* `H:\code_demo\claude_workspace\CLAUDE.md` routing as the reference migration, or leave all consumer edits out of scope?
+1. **Placement** — front-door **Rule 0** inside `using-engineering-workflow`. Not a standalone skill, not consumer-CLAUDE.md. ✅
+2. **Tripwire thresholds** (§6) — keep "~5 files or >1 subsystem → T2"; T-1 security-path list expanded to cover injection-prone areas (SQL/query, file-path/upload, deserialization) in addition to auth/secrets/API/crypto/config. Both project-tunable. ✅
+3. **Escape hatch** — documented **convention** (pin-to-T2+ line in CLAUDE.md) + per-task **override phrase** ("treat as T2" / "run full"). **No config file in v1.4** (YAGNI). ✅
+4. **Announce verbosity** — **silent on T0**, announce on **T1+**; tripwire escalations are always announced (§7). ✅
+5. **Consumer migration** — **out of v1.4 scope**. v1.4 ships the plugin change + README migration note. The reference migration of this workspace's `CLAUDE.md` is a **separate follow-up** (different repo/parent dir; itself a T0/T1 task). ✅
 
 ## 11. Self-Consistency Note
 
