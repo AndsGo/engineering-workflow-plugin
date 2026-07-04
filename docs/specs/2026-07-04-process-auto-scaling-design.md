@@ -1,6 +1,6 @@
 # Process Auto-Scaling — Match Process Weight to Change Size
 
-**Status:** Revised after plan-review (RETHINK round 1/2) → pending re-review
+**Status:** Revised (RETHINK-1) + hardened (round-2 REVISE) → execution-ready pending user go
 **Date:** 2026-07-04
 **Targets:** plugin v1.4 (`using-engineering-workflow` skill restructure; docs; classification eval)
 **Driver:** The plugin's flow control (`using-engineering-workflow`) is **maximally rigid** — a flat routing table plus 5 unconditional gates. Every non-trivial change pays the full toll (brainstorm → plan → plan-review → subagent-driven → structured-review → …), regardless of blast radius. This session produced a live example: a 4-sentence skill (`grill-me`) was routed through the same heavyweight pipeline that produced document-sync v2's 406-line spec + 1162-line plan. As models get stronger, prescribing *how* to execute (micro-step choreography) adds friction and can anchor the model below its own judgment; the durable value moves to *what must be true* (correct target, an oracle that can fail, adversarial verification of the gap). The plugin should scale its own process weight to the task.
@@ -95,9 +95,10 @@ Holds at every tier, never scaled away. Items 1–5 are guarantees; item 6 is th
 1. **Define "correct" before implementing** — ≥1 explicit sentence of expected behavior/outcome. If two valid interpretations of the target exist, resolve with the user before coding (do not guess).
 2. **Have a check that can actually fail.** A test, a fixture, or — for prose/docs-only work-items where no code runs — a concrete, independently-checkable assertion (e.g., "the documented count equals the actual count") or an explicit human review. A tautology that cannot fail is a broken oracle: **STOP** and fix it. Vacuous self-agreement does not satisfy this item.
 3. **Verify with evidence before claiming done** — `superpowers:verification-before-completion` at every tier. No success claim without observed output.
-4. **Never auto-execute irreversible or outward-facing actions** — push, deploy, migration, delete, external send always require explicit confirmation, regardless of tier.
+4. **Never auto-execute irreversible or outward-facing actions** — push, deploy, migration, delete, external send always require explicit confirmation, regardless of tier. The item-6 checkpoint MUST complete before any such action (see #6 ordering).
 5. **Learnings discipline (Rule 4)** — READ before analytical work; offer WRITE at session end (INDEX-first per `learnings-protocol.md`).
-6. **Completion-time checkpoint (the forcing function).** Before claiming a work-item done, re-scan the **actual diff** against the escalation conditions in §6 — independent of the tier assigned at the start. This closes two gaps the initial (pre-diff) classification cannot see: (a) a diff that turns out to touch a security path, and (b) scope that grew past the size threshold mid-task. If a condition is met, the work-item escalates, the escalation is announced, and the corresponding gate runs **before** completion. A mandatory checkpoint — not voluntary mid-task monitoring.
+6. **Completion-time checkpoint (the forcing function).** Before claiming a work-item done, re-scan the **actual diff** against the escalation conditions in §6 — independent of the tier assigned at the start. This closes gaps the initial (pre-diff) classification cannot see: a diff that turns out to touch a security path (E-1), scope that grew past the threshold mid-task (E-2), or an irreversible/destructive op that only became apparent in the diff (E-4). If a condition is met, the work-item escalates, the escalation is announced, and the corresponding gate runs **before** completion. A mandatory checkpoint — not voluntary mid-task monitoring.
+   **Ordering (closes the silent-T0 seam):** the checkpoint runs *before* any floor-#4 irreversible/outward-facing action. So for a work-item that looked trivial but whose diff touches a security path, the E-1 scan and its forced `security-audit` happen **before** the push/commit/deploy — never after. A silent T0 that turns out to touch security is therefore caught and escalated (and thus announced) prior to any irreversible step.
 
 ## 6. Escalation Conditions — enforced at the §5.6 checkpoint
 
@@ -108,8 +109,9 @@ Escalation is **one-directional** (only ever raises the tier) and enforced by th
 | E-1 | diff touches a security-sensitive path: auth/authn/authz, secrets/credentials/keys/tokens/session, input validation & sanitization, public API surface, crypto, SQL/query construction, file path & upload handling, deserialization, secret-bearing config | run at **≥T2 + mandatory `security-audit`** + human approval before the irreversible step | **No** — non-tunable floor guarantee. A consumer may *extend* the path list; it may not disable the requirement or shrink below the built-in core set. |
 | E-2 | cumulative files touched exceed the threshold (default ~5) or a second subsystem is involved | escalate to **T2**; run plan-review (Gate 1) before continuing | threshold tunable **upward only, with a hard built-in floor** |
 | E-3 | a test was written that cannot fail, or was weakened to pass | **STOP** — broken oracle; fix the check before proceeding | No |
+| E-4 | the diff performs an irreversible/destructive op that wasn't apparent at classification: schema migration, data delete/drop, mass rewrite, force-push | escalate to **≥T2** + human approval before the irreversible step | No |
 
-Removed from the earlier draft (per plan-review): old T-4 ("second interpretation → clarify") is now floor item 1 (define-correct); old T-5 ("reversibility worse than assumed") is subsumed by E-1/E-2 running against the actual diff at the checkpoint. Three conditions, each with a forcing function.
+Removed from the earlier draft (per plan-review): old T-4 ("second interpretation → clarify") is now floor item 1 (define-correct). Old T-5 ("reversibility worse than assumed") is **not** silently subsumed — it is made explicit as **E-4**, since a small, non-security destructive change would otherwise escalate via neither E-1 (security-only) nor E-2 (size-only). Floor item 4 still guarantees a confirmation for any irreversible op at every tier; E-4 adds the elevated design scrutiny (plan-review) when the irreversibility was a surprise. Four conditions, each with a forcing function at the checkpoint.
 
 ## 7. Announce-the-Tier Contract
 
@@ -141,14 +143,16 @@ The announce line is a near-zero-cost veto: a wrong classification is caught in 
 
 Plan-review flagged that a self-authored, self-graded fixture walkthrough is circular: it runs in calm conditions with the answer key in hand and cannot detect the central failure (under-pressure under-classification). Revised strategy:
 
-1. **Blind classification eval.** A *fresh subagent* gets only the scenario text + the shipped `SKILL.md` (Rule 0) — the expected tier is **withheld**. It classifies; the controller diffs its answer against held-out ground truth. The graded model never sees the answer key.
-2. **Multi-run (variance).** Each scenario is classified by ≥3 independent runs; a scenario passes only if classification is stable. Flapping is itself a finding — the signals are underspecified.
+1. **Blind classification eval.** A *fresh subagent* gets only the scenario text + the shipped `SKILL.md` (Rule 0) — the expected tier is **withheld**. It is instructed not to read `tests/`, `docs/plans/`, or `docs/specs/` (where the answer key and tier rationale live), and ideally is run without repo file tools (scenario + SKILL.md pasted inline). The controller diffs its answer against held-out ground truth. The graded model never sees the answer key.
+2. **Multi-run (variance).** Each scenario is classified by **≥5** independent runs; a scenario passes only if classification is stable across all runs. Flapping is itself a finding — the signals are underspecified. (≥5, not 3: a 20–30% misclassification rate — the dangerous under-classification band — clears a 3-run stability check too often.)
 3. **Held-out set from real history.** Scenarios are drawn from this repo's actual git history (v1.1–v1.4 work-items), not author-constructed to match the rules — so the eval measures realistic classification, not recognition of the examples the rules were written against.
 4. **Tier-distribution calibration.** Report the tier mix over the held-out set. The feature's purpose is *less* ceremony, so nearly-everything-T2 is a **failure** (ceremony-restoration) just as everything-T0 is (unsafe). The measured mix is evidence the feature works in the intended direction.
 5. **One live empirical session.** Run one real task end-to-end through Rule 0 (controller-observed) as independent behavioral evidence — mirroring document-sync v2's second, controller-run empirical pass.
 6. **Anti-self-certification gate.** Checks require literal token presence/absence (tier token, escalation phrase) applied to the *blind* runs' outputs — the gate now constrains a model that did not write the answer key.
 
 **Rollback / detection note:** v1.4 has no runtime telemetry (a skipped review leaves no artifact). Conservative-wins (§4.3) bounds the blast radius — only opted-in consumers can be affected. Field detection via **shadow-logging** (log what Rule 0 *would* skip while still running the full flow) is a recommended v1.5 follow-up.
+
+**Opt-in tradeoff (acknowledged, per plan-review):** because rollout is conservative-wins/opt-in, existing consumers with an "always review" rule feel **no** lightening until they migrate — so the motivating pain isn't relieved automatically, and until v1.5 shadow-logging lands the field benefit is unmeasurable. This is a deliberate safety-over-speed choice for v1.4. The **activation path for this project** is the already-planned separate follow-up: migrate this workspace's own `CLAUDE.md` to defer to Rule 0 (a T0/T1 task), which both dogfoods the feature and realizes its benefit here first.
 
 ## 10. Resolved Decisions
 
@@ -166,6 +170,12 @@ Plan-review flagged that a self-authored, self-graded fixture walkthrough is cir
 9. **Conservative-wins precedence** (§4.3) — resolves the Rule-0-vs-consumer-CLAUDE.md contradiction and makes rollout safe/opt-in (adversarial: "backward-compatible was false").
 10. **Verification redesigned** (§9) — blind, multi-run, held-out + calibration + live empirical (feasibility + adversarial B1: circular self-certification).
 11. **Classification unit defined** (§4.0) + **docs-only floor handling** (§5.2) + **Rule 0 kept lean** to avoid token-bloat in an always-loaded file (scope-guardian).
+
+**Round-2 re-review hardening (REVISE, 2026-07-04):**
+12. **Checkpoint-before-irreversible ordering** (§5 #4/#6) — closes the silent-T0-touches-security seam (adversarial round-2 blocker): the E-1 scan runs before any push/deploy.
+13. **E-4 added** (§6) — a non-security, small irreversible/destructive change now escalates explicitly; the earlier "subsumed by E-1/E-2" claim was inaccurate and is corrected (adversarial round-2 warning).
+14. **Blind isolation broadened + runs ≥5** (§9) — classifier must not read `docs/plans/`/`docs/specs/`/`tests/` (the key lived there); n bumped 3→5 for the under-classification band (feasibility + adversarial round-2).
+15. **Opt-in tradeoff acknowledged** (§9) — benefit is deferred behind migration and unmeasurable until v1.5 shadow-logging; workspace-CLAUDE.md migration is the activation path.
 
 ## 11. Self-Consistency Note
 

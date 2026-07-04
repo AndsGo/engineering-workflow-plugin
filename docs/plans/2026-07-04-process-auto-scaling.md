@@ -3,6 +3,7 @@
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 >
 > **Revised after plan-review RETHINK round 1** — self-graded fixtures replaced by a blind/held-out eval; T3 removed; tripwires folded into a completion-time floor checkpoint; two SKILL.md tasks merged; acceptance gate folded into the final task.
+> **Hardened after round-2 REVISE** — checkpoint runs before any irreversible action (silent-T0 seam); E-4 added for surprise-irreversible changes; blind isolation broadened to `docs/plans`/`docs/specs` + runs ≥5; Rule 3 restatement trimmed to a pointer.
 
 **Goal:** Add a tier-based triage front-door to `using-engineering-workflow` so the plugin auto-scales process weight to change size, with a constant correctness floor whose completion-time checkpoint gives escalation a real forcing function.
 
@@ -43,7 +44,7 @@
 - Create: `skills/using-engineering-workflow/tests/README.md`
 
 **Interfaces:**
-- Produces: a numbered scenario list (scenario text only — NO expected tier in this file) consumed by the Task 3 blind runs; and a README defining the blind protocol. The ground-truth key is NOT stored here (it lives in the plan below + the Task 3 report), so a classifier that reads the repo cannot see the answers.
+- Produces: a numbered scenario list (scenario text only — NO expected tier in this file) consumed by the Task 3 blind runs; and a README defining the blind protocol. The ground-truth key lives in this plan + the Task 3 report (both under `docs/`), so blindness depends on the classifier being isolated from `tests/`, `docs/plans/`, and `docs/specs/` (Task 3 Step 1) — NOT on the key's absence from the repo.
 
 - [ ] **Step 1: Create `tests/eval-scenarios.md` (scenarios only, drawn from real history)**
 
@@ -76,10 +77,13 @@ with the answer key in hand).
 
 Protocol (run by the controller, see `eval-2026-07-04.md`):
 1. **Blind:** each scenario in `eval-scenarios.md` is handed to a FRESH subagent
-   with only the scenario + shipped `SKILL.md`. The expected tier is withheld;
-   the subagent is instructed NOT to read anything under `tests/`.
-2. **Multi-run:** ≥3 independent runs per scenario; a scenario passes only if the
-   tier is stable across runs (flapping ⇒ signals underspecified).
+   with only the scenario + shipped `SKILL.md`. The expected tier is withheld; the
+   subagent is instructed NOT to read `tests/`, `docs/plans/`, or `docs/specs/`
+   (the answer key + tier rationale live there), and ideally runs with the scenario
+   + SKILL.md pasted inline and no repo file tools.
+2. **Multi-run:** ≥5 independent runs per scenario; a scenario passes only if the
+   tier is stable across ALL runs (flapping ⇒ signals underspecified). ≥5 not 3:
+   a 20–30% misclassification rate clears a 3-run check too often.
 3. **Held-out:** scenarios are real git-history work-items, not authored to fit
    the rules.
 4. **Calibration:** report the tier distribution — nearly-all-T2 is a failure
@@ -146,7 +150,7 @@ If a tier conflicts with the consumer's own `CLAUDE.md` rule or a Superpowers Ir
 3. Verify with evidence before "done" (`superpowers:verification-before-completion`).
 4. Never auto-execute irreversible / outward-facing actions (push, deploy, migration, delete, external send) — confirm first.
 5. Learnings discipline (Rule 4) applies.
-6. **Completion-time checkpoint (forcing function):** before claiming done, re-scan the **actual diff** against 0.4 — independent of the starting tier. If a condition fires, escalate, **announce it**, and run the required gate before completion. (Catches a diff that turned out to touch a security path, or scope that grew mid-task — the pre-diff classification sees neither.)
+6. **Completion-time checkpoint (forcing function):** before claiming done, re-scan the **actual diff** against 0.4 — independent of the starting tier. If a condition fires, escalate, **announce it**, and run the required gate before completion. (Catches a diff that turned out to touch a security path, scope that grew mid-task, or a surprise irreversible op — the pre-diff classification sees none.) **Ordering:** this checkpoint runs *before* any floor-#4 irreversible/outward-facing action, so E-1's `security-audit` fires before a push/deploy, never after — closing the silent-T0 seam.
 
 #### 0.4 Escalation conditions (checked at the 0.3 #6 checkpoint; one-directional)
 
@@ -155,6 +159,7 @@ If a tier conflicts with the consumer's own `CLAUDE.md` rule or a Superpowers Ir
 | E-1 | touches a security path: auth, secrets/credentials/keys/tokens/session, input validation, public API, crypto, SQL/query, file-path/upload, deserialization, secret-bearing config | **≥T2 + mandatory `security-audit`** + human approval before the irreversible step | **No** — consumers may extend the list, not disable it |
 | E-2 | cumulative files > ~5, or a 2nd subsystem involved | escalate to **T2**; plan-review before continuing | upward only, hard floor |
 | E-3 | a test that cannot fail / was weakened to pass | **STOP** — broken oracle | No |
+| E-4 | diff performs a surprise irreversible/destructive op (migration, delete/drop, mass rewrite, force-push) | escalate to **≥T2** + human approval before the irreversible step | No |
 
 #### 0.5 Announce
 
@@ -180,7 +185,7 @@ The gate descriptions below are the **T2 baseline**; lighter tiers apply the sub
 Replace the Rule 3 intro `These thoughts mean STOP — you are about to skip a flow gate:` with:
 
 ```markdown
-At **T1+**, these thoughts mean STOP — you are about to skip a flow gate. (At **T0** the gates are absent by classification, not rationalization — but the Rule 0.3 floor still holds, and the Rule 0.3 #6 checkpoint re-scans the diff before "done," so a T0 that touches a security path or grows in scope is caught and escalated.)
+At **T1+**, these thoughts mean STOP — you are about to skip a flow gate. (At **T0** the gates are absent by classification, not rationalization — but the Rule 0.3 floor still holds, including the #6 checkpoint.)
 ```
 
 - [ ] **Step 4: Add a floor cross-reference to Rule 4**
@@ -222,11 +227,11 @@ git commit -m "feat(workflow): add lean Rule 0 Triage + tier-conditional gates (
 
 - [ ] **Step 1: Run the blind classification (≥3 runs × 6 scenarios)**
 
-For each scenario S1–S6, dispatch a fresh subagent with a prompt containing ONLY: (a) that one scenario's text, (b) an instruction to classify per `skills/using-engineering-workflow/SKILL.md` Rule 0 and output `Tier: T<n>` + signals + any escalation condition, (c) an instruction NOT to open any file under `tests/`. Do this ≥3 times per scenario (independent runs). The expected tier is never included in the prompt.
+For each scenario S1–S6, dispatch a fresh subagent with a prompt containing ONLY: (a) that one scenario's text, (b) an instruction to classify per `skills/using-engineering-workflow/SKILL.md` Rule 0 and output `Tier: T<n>` + signals + any escalation condition, (c) an instruction NOT to open any file under `tests/`, `docs/plans/`, or `docs/specs/` (the answer key lives there) — ideally paste `SKILL.md` inline and give the classifier no repo file tools at all. Do this **≥5** times per scenario (independent runs). The expected tier is never included in the prompt.
 
 - [ ] **Step 2: Score against the withheld key and compute stability + distribution**
 
-Record, per scenario: the 3 blind tiers, whether they are stable, and pass/fail vs the key (S1→T0, S2→T1, S3→T2, S4→T2, S5→T1, S6→≥T2+E-1). Compute the tier distribution across scenarios for calibration.
+Record, per scenario: the ≥5 blind tiers, whether they are stable across all runs, and pass/fail vs the key (S1→T0, S2→T1, S3→T2, S4→T2, S5→T1, S6→≥T2+E-1). Compute the tier distribution across scenarios for calibration.
 
 - [ ] **Step 3: One live empirical session**
 
@@ -234,7 +239,7 @@ Take one real, small task (e.g., the pending `grill-me` adaptation, or a doc fix
 
 - [ ] **Step 4: Write `eval-2026-07-04.md`**
 
-Structure: (1) the ground-truth key; (2) per-scenario table [scenario | 3 blind tiers | stable? | matches key?]; (3) tier distribution + a one-line calibration judgement (is the mix sane — not all-T2, not all-T0?); (4) the live empirical trace; (5) an anti-self-certification note confirming the classifiers were blind (prompt excerpt showing no expected tier); (6) a distinct final line:
+Structure: (1) the ground-truth key; (2) per-scenario table [scenario | ≥5 blind tiers | stable? | matches key?]; (3) tier distribution + a one-line calibration judgement (is the mix sane — not all-T2, not all-T0?); (4) the live empirical trace; (5) an anti-self-certification note confirming the classifiers were blind (prompt excerpt showing no expected tier and the isolation instruction); (6) a distinct final line:
 ```
 EVAL VERDICT: PASS
 ```
@@ -344,7 +349,9 @@ Then report branch state (`git log --oneline` since `v1.3.0`) and hand off to `s
 
 **3. Type consistency:** Anchors consistent — `Rule 0.1`–`0.5`, `E-1`/`E-2`/`E-3`, tiers `T0`/`T1`/`T2` (no `T3`), scenario ids `S1`–`S6`, verdict token `EVAL VERDICT: PASS`. Acceptance-gate grep strings match the exact inserted text (`Rule 0: Triage`, `Completion-time checkpoint`, `conservative wins`, `per the work-item's tier`). ✅
 
-**Addresses plan-review blockers:** B1 (circular verification) → Task 3 blind/held-out/multi-run + withheld key. B2 (defeatable invariant) → E-1 non-tunable (Task 2 0.4). B3 (no forcing function) → floor completion-time checkpoint (Task 2 0.3 #6). Scope trims → T3 removed, T-4/T-5 gone, tasks merged 6→4, Rule 0 kept lean. Grep bugs → replaced brittle counts with `-q` presence checks.
+**Addresses plan-review round-1 blockers:** B1 (circular verification) → Task 3 blind/held-out/multi-run + withheld key. B2 (defeatable invariant) → E-1 non-tunable (Task 2 0.4). B3 (no forcing function) → floor completion-time checkpoint (Task 2 0.3 #6). Scope trims → T3 removed, T-4/T-5 gone, tasks merged 6→4, Rule 0 kept lean. Grep bugs → `-q` presence checks.
+
+**Addresses round-2 findings:** new blocker (checkpoint/irreversible ordering) → 0.3 #6 "runs before any floor-#4 action." T-5 gap → E-4 (surprise-irreversible → ≥T2 + approval). B1 leak → isolation broadened to `docs/plans`/`docs/specs`, runs ≥5. Scope → Rule 3 trimmed to a pointer. Opt-in tradeoff acknowledged in spec §9 (workspace-CLAUDE.md migration is the activation path).
 
 ---
 
