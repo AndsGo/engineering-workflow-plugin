@@ -5,7 +5,7 @@ description: "Use when starting any session with engineering work, or when unsur
 
 # Engineering Workflow — Flow Control
 
-This plugin provides 10 specialized skills that extend Superpowers with process and tool capabilities. These rules govern when and how they are invoked.
+This plugin provides 11 specialized skills that extend Superpowers with process and tool capabilities. These rules govern when and how they are invoked.
 
 ## Relationship with Superpowers
 
@@ -160,7 +160,7 @@ Rule 4 is an **invariant floor** item (Rule 0.3 #5): it applies at every tier, T
 | PASS | → continue to ship |
 | FAIL | → fix P0/P1 issues → re-audit (do NOT ship) |
 
-## Available Skills (10)
+## Available Skills (11)
 
 | Skill | Trigger |
 |-------|---------|
@@ -174,6 +174,7 @@ Rule 4 is an **invariant floor** item (Rule 0.3 #5): it applies at every tier, T
 | `e2e-browser-test` | Browser testing on affected pages |
 | `resolve-pr-feedback` | Batch-process PR review comments |
 | `document-sync` | Sync docs to match shipped code |
+| `learnings-refresh` | Maintain docs/learnings/ — detect stale, cluster, regenerate INDEX |
 
 ## Workflow State
 
