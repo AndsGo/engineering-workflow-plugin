@@ -1,6 +1,6 @@
 ---
 name: grill-me
-description: "Interview the user relentlessly about a plan, design, or idea until reaching shared understanding, resolving each branch of the decision tree with a recommended answer per question. Use when the user wants to stress-test a plan/design interactively, or says 'grill me', '质询我的计划', '拷问这个设计', 'poke holes in this'."
+description: "Interview the user relentlessly about a plan, design, or idea until reaching shared understanding, resolving each branch of the decision tree with a recommended answer per question. The live, synchronous alternative to the async plan-review-personas. Use when the user wants to stress-test a plan/design interactively, or says 'grill me', '质询我的计划', '拷问这个设计', 'poke holes in this'."
 ---
 
 # Grill Me

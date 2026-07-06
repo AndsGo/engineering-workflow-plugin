@@ -107,14 +107,15 @@ Optional tools are checked at session start. Missing tools produce a one-line no
 
 ## What's Inside
 
-### Skills (10)
+### Skills (12)
 
 | Skill | What it does | Triggered by |
 |-------|-------------|-------------|
 | **using-engineering-workflow** | Flow control rules (auto-injected) | Every session start |
 | **structured-review** | Multi-role code review (4 reviewer agents) | "review code", before merge |
 | **knowledge-compound** | Document learnings (Bug/Knowledge/Decision) | After tasks, debugging, session end |
-| **plan-review-personas** | Stress-test plans (3 adversarial personas) | After writing plans, before execution |
+| **plan-review-personas** | Stress-test plans (3 adversarial personas, async) | After writing plans, before execution |
+| **grill-me** | Stress-test a plan/design interactively (live, one question at a time) | "grill me", "拷问这个设计" |
 | **ship-and-pr** | Pre-flight, commit, push, create PR | "ship it", "create PR" |
 | **security-audit** | OWASP Top 10 + STRIDE threat model | Auth/input/API/secrets changes |
 | **engineering-retro** | Git-based engineering retrospective | "retro", weekly review |
