@@ -5,7 +5,7 @@ description: "Use when starting any session with engineering work, or when unsur
 
 # Engineering Workflow — Flow Control
 
-This plugin provides 9 specialized skills that extend Superpowers with process and tool capabilities. These rules govern when and how they are invoked.
+This plugin provides 10 specialized skills that extend Superpowers with process and tool capabilities. These rules govern when and how they are invoked.
 
 ## Relationship with Superpowers
 
@@ -66,6 +66,7 @@ Match the user's intent to the correct skill. Check this routing table BEFORE re
 | Product idea, feature exploration | `superpowers:brainstorming` | SP first |
 | Write implementation plan | `superpowers:writing-plans` | SP first |
 | Review plan before execution | `plan-review-personas` | This plugin |
+| Stress-test a plan/design interactively, "grill me" | `grill-me` | This plugin |
 | Implement code | `superpowers:subagent-driven-development` | SP first |
 | Test page in browser, "does this work" | `e2e-browser-test` | This plugin |
 | Review code, check diff | `structured-review` | This plugin |
@@ -159,13 +160,14 @@ Rule 4 is an **invariant floor** item (Rule 0.3 #5): it applies at every tier, T
 | PASS | → continue to ship |
 | FAIL | → fix P0/P1 issues → re-audit (do NOT ship) |
 
-## Available Skills (9)
+## Available Skills (10)
 
 | Skill | Trigger |
 |-------|---------|
 | `structured-review` | Code review before merge |
 | `knowledge-compound` | Document learnings after tasks |
-| `plan-review-personas` | Stress-test plans before execution |
+| `plan-review-personas` | Stress-test plans before execution (async) |
+| `grill-me` | Stress-test a plan/design interactively (live) |
 | `ship-and-pr` | Commit, push, create PR |
 | `security-audit` | Security review on sensitive changes |
 | `engineering-retro` | Weekly/milestone retrospective |

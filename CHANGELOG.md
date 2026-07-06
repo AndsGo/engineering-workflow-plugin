@@ -2,6 +2,11 @@
 
 All notable changes to this plugin are documented here. Written for users, not contributors.
 
+## [1.5.0] - 2026-07-06
+
+### Added
+- **`grill-me` skill** — interactive, human-in-the-loop stress-testing of a plan/design/idea: it interviews you one question at a time, walking the decision tree with a recommended answer per question, and explores the codebase instead of asking when the answer is discoverable. Complements `plan-review-personas` (async adversarial agents) with a synchronous, live alternative. Adapted from Matt Pocock's `grill-me` (MIT). Triggers: "grill me", "质询我的计划", "拷问这个设计", "poke holes in this".
+
 ## [1.4.0] - 2026-07-04
 
 ### Added
