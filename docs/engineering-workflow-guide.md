@@ -1,6 +1,6 @@
 # Engineering Workflow Guide
 
-三层工程栈使用指南。Superpowers 提供纪律底线，10 个自定义 skill 提供流程和工具。
+三层工程栈使用指南。Superpowers 提供纪律底线，11 个自定义 skill 提供流程和工具。流程强度按改动体量自动缩放（见下方「流程自动缩放」）。
 
 ## 快速参考
 
@@ -9,6 +9,7 @@
 | 探索一个新功能想法 | "我想做一个 XX 功能" | SP brainstorming |
 | 把设计变成计划 | "写个实施计划" | SP writing-plans |
 | 检查计划是否靠谱 | "review 一下这个计划" | plan-review-personas |
+| 互动式拷问计划/设计 | "grill me" / "拷问这个设计" | grill-me |
 | 开始写代码 | "开始执行计划" | SP subagent-driven-dev |
 | 修一个 bug | "这里有个 bug" | SP systematic-debugging |
 | 提交前审查代码 | "review 代码" | structured-review |
@@ -20,6 +21,18 @@
 | 月度复盘 / 维护 learnings | "refresh learnings" / "audit learnings" | learnings-refresh |
 | 同步文档 | "update docs" / "同步文档" | document-sync |
 | 处理 PR 反馈 | "resolve PR comments" | resolve-pr-feedback |
+
+## 流程自动缩放 (Rule 0)
+
+`using-engineering-workflow` 的 **Rule 0: Triage** 按改动体量给每个工作项分档，决定用多重流程（plugin v1.4+）：
+
+- **T0 琐碎**（版本号、typo、文档一行，无运行时逻辑变更）：直接做，跳过审查 gate，静默。
+- **T1 标准**（有界 bugfix/feature，目标清晰）：spec-lite + 一个能失败的检查 + 一次 `structured-review`。
+- **T2 实质**（多文件 / 真设计选择 / oracle 需设计）：走完整流程（见下方「场景 1」）。
+
+**恒定下限（每档都适用）：** 先定义「正确」、有一个能真正失败的检查、完成前用证据验证、不可逆/对外动作先确认、learnings 纪律。触及安全路径（auth/密钥/输入/API/加密等）强制升到 ≥T2 + `security-audit`（不可关闭）。**T1+ 开工前先声明档位**，T0 静默。
+
+下面的「完整工作流」是 **T2** 的样子；T0/T1 按上表裁剪掉不需要的环节。
 
 ## 完整工作流
 
@@ -323,4 +336,4 @@ TDD 和 verification 是不可跳过的纪律。structured-review 和 security-a
 
 ### Q: Learnings Protocol 是什么？
 
-`skills/using-engineering-workflow/references/learnings-protocol.md` 是版本化的契约，定义所有 learning-touching skill 必须遵守的 READ / WRITE / MAINTAIN 三阶段。9 个 skill 都引用它（meta + 7 consumer + document-sync），不重复散文。修改契约是 plugin 的破坏性变更。
+`skills/using-engineering-workflow/references/learnings-protocol.md` 是版本化的契约，定义所有 learning-touching skill 必须遵守的 READ / WRITE / MAINTAIN 三阶段。10 个 skill 都引用它（meta + 9 个 consumer skill），不重复散文。修改契约是 plugin 的破坏性变更。
