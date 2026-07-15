@@ -38,7 +38,7 @@ If a tier conflicts with the consumer's own `CLAUDE.md` rule or a Superpowers Ir
 #### 0.3 Invariant floor — every tier, never scaled away
 
 1. Define "correct" before implementing (≥1 sentence). Two valid interpretations → resolve with the user, don't guess.
-2. Have a check that can **actually fail** (test / fixture / for docs-only: a concrete independently-checkable assertion or explicit human review). A tautology is a broken oracle → STOP.
+2. Have a check that can **actually fail** (test / fixture / for docs-only: a concrete independently-checkable assertion or explicit human review). A tautology is a broken oracle → STOP. For scenario-protocol-adopted projects, a T2 work-item with an HTTP-observable surface requires user-confirmed acceptance scenarios + a green loop-engine verdict (see `references/scenario-protocol.md`).
 3. Verify with evidence before "done" (`superpowers:verification-before-completion`).
 4. Never auto-execute irreversible / outward-facing actions (push, deploy, migration, delete, external send) — confirm first.
 5. Learnings discipline (Rule 4) applies.

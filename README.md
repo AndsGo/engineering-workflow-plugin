@@ -207,6 +207,10 @@ An **invariant floor** holds at every tier (define "correct" first; a check that
 
 > **Migration (v1.4):** Routing now auto-scales by tier (T0–T2). By conservative-wins precedence, an unmigrated project keeps its current behavior — if your `CLAUDE.md` says "always review," that still wins. To opt into lighter handling of small changes, trim your duplicated always-full routing to a pointer at `using-engineering-workflow`. Security-touching changes always escalate (non-tunable). No config file required.
 
+## Scenario Protocol (v1.6)
+
+Business-acceptance scenarios as a machine-checkable contract: user-confirmed Given-When-Then with observable bindings, compiled and verified against the running system by the standalone loop-engine (forthcoming, separate repo). Opt-in per project (conservative-wins); see `skills/using-engineering-workflow/references/scenario-protocol.md`.
+
 ## Origin
 
 This plugin extracts and fuses patterns from three open-source projects:

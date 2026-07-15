@@ -2,6 +2,15 @@
 
 All notable changes to this plugin are documented here. Written for users, not contributors.
 
+## [1.6.0] - 2026-07-15
+
+### Added
+- **Scenario Protocol v0.1** (`references/scenario-protocol.md`): business-acceptance scenarios as a machine-checkable contract — YAML Given-When-Then with mandatory observable bindings, user sign-off, held-out anti-overfitting scenarios, and engine exit-code semantics. Consumed by the standalone loop-engine; adoption is opt-in per project (conservative-wins).
+- Rule 0 floor hook: adopted projects' T2 work with an HTTP surface gates "done" on a green scenario verdict.
+
+### Compatibility
+- No behavior change for non-adopted projects. No new skill added.
+
 ## [1.5.0] - 2026-07-06
 
 ### Added
