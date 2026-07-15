@@ -63,6 +63,7 @@ scenarios:
       - status: 200
       - header: { name: Content-Type, contains: application/json }
       - jsonpath: { path: "$.applied", equals: true }
+      - jsonpath: { path: "$.version", exists: true }
     retry:                            # optional eventually-semantics
       until_pass: true
       max_attempts: 30
@@ -122,8 +123,29 @@ git commit -m "feat(workflow): scenario-protocol v0.1 contract (schema + discipl
 > Controller dispatches blind subagents (contract text pasted inline, NO repo tools, no examples beyond the contract itself); implementer-style delegation would break blindness.
 
 - [ ] **Step 1: Authoring check ×2.** Fresh subagent gets: the contract text + a toy endpoint description (`POST /api/v1/notes` → 201 + `{id, text}`; `GET /api/v1/notes/{id}` → 200 or 404) + instruction to author a scenario file with ≥2 scenarios including one 404 case. Grade mechanically against the 5 hard rules. Both runs must produce valid files.
-- [ ] **Step 2: Rejection check ×2.** Fresh subagent gets: the contract text + a planted-violation scenario file containing exactly 3 violations — (a) fuzzy assertion `- looks: friendly`, (b) literal secret `Authorization: Bearer sk-live-abc123`, (c) two requests under `when`. Must name all 3. Both runs must catch 3/3.
-- [ ] **Step 3: Write the eval report** (ground truth, per-run results, prompt excerpt proving blindness) ending with exactly `EVAL VERDICT: PASS` (only if 4/4 runs pass; otherwise FAIL + fix contract wording in Task 1 and re-run).
+- [ ] **Step 2: Rejection check ×2.** Fresh subagent gets: the contract text + this planted-violation file VERBATIM (exactly 3 violations: rule 1 fuzzy assertion type, rule 2 two requests, rule 4 literal secret — `protocol`/`given`/non-empty-`then` are deliberately valid so ground truth stays exactly 3). Must name all 3; both runs must catch 3/3.
+
+```yaml
+protocol: scenario/v0.1
+feature: notes-broken
+base_url_env: LOOP_BASE_URL
+scenarios:
+  - id: create-note-broken
+    title: 创建笔记后返回该笔记
+    given: server 正在运行
+    when:
+      - request:
+          method: POST
+          path: /api/v1/notes
+          headers: { Authorization: "Bearer sk-live-abc123" }
+      - request:
+          method: GET
+          path: /api/v1/notes/1
+    then:
+      - status: 201
+      - looks: friendly
+```
+- [ ] **Step 3: Write the eval report** (ground truth, per-run results, prompt excerpt proving blindness) ending with exactly `EVAL VERDICT: PASS` (only if 4/4 runs pass; otherwise FAIL + fix contract wording in Task 1 and re-run). Include a **Known Gaps** note: operator vocabulary inside assertion types (`equals`/`exists`/`contains`) is exemplified, not normatively enumerated — accepted v0.1 looseness, to be sealed by Stage A findings (per spec §7.3), not by speculating ahead of the engine.
 - [ ] **Step 4: Verify + commit**
 
 ```bash
@@ -144,12 +166,12 @@ git commit -m "test(workflow): blind teachability eval for scenario-protocol v0.
 For scenario-protocol-adopted projects, a T2 work-item with an HTTP-observable surface requires user-confirmed acceptance scenarios + a green loop-engine verdict (see `references/scenario-protocol.md`).
 ```
 
-- [ ] **Step 2: README.** Add subsection after the Process Auto-Scaling section:
+- [ ] **Step 2: README.** Add as a SIBLING section (`##`, not nested) after the Process Auto-Scaling section:
 
 ```markdown
-### Scenario Protocol (v1.6)
+## Scenario Protocol (v1.6)
 
-Business-acceptance scenarios as a machine-checkable contract: user-confirmed Given-When-Then with observable bindings, compiled and verified against the running system by the standalone [loop-engine]. Opt-in per project (conservative-wins); see `skills/using-engineering-workflow/references/scenario-protocol.md`.
+Business-acceptance scenarios as a machine-checkable contract: user-confirmed Given-When-Then with observable bindings, compiled and verified against the running system by the standalone loop-engine (forthcoming, separate repo). Opt-in per project (conservative-wins); see `skills/using-engineering-workflow/references/scenario-protocol.md`.
 ```
 
 - [ ] **Step 3: CHANGELOG** (prepend above 1.5.0, keep all entries):
@@ -165,7 +187,12 @@ Business-acceptance scenarios as a machine-checkable contract: user-confirmed Gi
 - No behavior change for non-adopted projects. No new skill added.
 ```
 
-- [ ] **Step 4: Version bump** plugin.json + marketplace.json (×2) → `1.6.0`; verify JSON parses.
+- [ ] **Step 4: Version bump** plugin.json + marketplace.json (×2) → `1.6.0`. Verify:
+
+```bash
+grep -c '"version": "1.6.0"' .claude-plugin/marketplace.json   # expect exactly 2
+python -m json.tool .claude-plugin/plugin.json > /dev/null && python -m json.tool .claude-plugin/marketplace.json > /dev/null && echo "json ok"
+```
 - [ ] **Step 5: Acceptance gate**
 
 ```bash

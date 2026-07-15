@@ -99,8 +99,8 @@ No new skill in v1.6. The loop is driven by session discipline (Rule 0 floor + t
 
 The contract is a doc — its oracle is **teachability + parseability**, checked blind (per `blind-eval-not-self-graded`):
 
-1. **Blind authoring check:** a fresh subagent, given ONLY the contract doc + a toy endpoint description (no examples from this spec), must author a valid scenario file. Pass = output parses against §4's hard rules (checked mechanically once the engine exists; until then, checked against the rules by a second blind reviewer).
-2. **Blind rejection check:** the same setup, given a deliberately broken scenario (empty `then`, literal secret, fuzzy assertion "response looks right"), must identify all three violations. Pass = all three named.
+1. **Blind authoring check (×2 runs):** a fresh subagent, given ONLY the contract doc + a toy endpoint description (no examples from this spec), must author a valid scenario file. Pass = output satisfies §4's hard rules, graded mechanically by the controller against the explicit rule list (the rules are closed and mechanical; author-blindness is the property that matters).
+2. **Blind rejection check (×2 runs):** the same setup, given a planted-violation file (verbatim in the plan) with exactly 3 violations — fuzzy assertion type (rule 1), two requests under `when` (rule 2), literal secret (rule 4) — must identify all three. Pass = all three named. (Violation set chosen for rule coverage over rules 1/2/4; `protocol`/`given`/non-empty-`then` kept valid so ground truth stays exactly 3.)
 3. **Empirical (Stage A, after engine v0.1):** author the A4a config-reload scenario file against the real sealed contract; engine parses it and runs green against a live enterprice_agent. This is the contract's real acceptance and is tracked in the engine/pilot specs — v1.6 does not block on it, but the contract carries `protocol: scenario/v0.1` precisely so Stage A findings can bump it to v0.2 without breaking adopters.
 
 ## 8. Resolved Decisions
