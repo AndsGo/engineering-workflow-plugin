@@ -2,7 +2,7 @@
 
 Complete engineering workflow for Claude Code. Extends [Superpowers](https://github.com/obra/superpowers) with multi-role code review, knowledge accumulation, security audit, browser testing, PR feedback resolution, and document sync.
 
-**10 process skills + 2 enforcement hooks + 1 meta skill. Zero runtime dependencies.**
+**12 process skills + 2 enforcement hooks + 1 meta skill. Zero runtime dependencies (loop-verify engine optional).**
 
 ## Quick Start
 
@@ -107,7 +107,7 @@ Optional tools are checked at session start. Missing tools produce a one-line no
 
 ## What's Inside
 
-### Skills (12)
+### Skills (13)
 
 | Skill | What it does | Triggered by |
 |-------|-------------|-------------|
@@ -123,6 +123,7 @@ Optional tools are checked at session start. Missing tools produce a one-line no
 | **e2e-browser-test** | Browser testing on diff-affected pages | "test the site", "e2e test" |
 | **resolve-pr-feedback** | Batch-process PR review comments | "resolve PR comments" |
 | **document-sync** | Sync docs to match shipped code | After shipping, "update docs" |
+| **loop-verify** | Drive the scenario-protocol acceptance loop (sign-off → engine run → green) | "跑验收", "verify scenarios" |
 
 ### Hooks (2) + Cross-Platform Wrapper
 

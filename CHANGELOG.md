@@ -2,6 +2,14 @@
 
 All notable changes to this plugin are documented here. Written for users, not contributors.
 
+## [1.7.0] - 2026-07-16
+
+### Added
+- **`loop-verify` skill** — session-side driver for the scenario-protocol acceptance loop: prerequisites check, scenario drafting, `validate` E-3 gate, **user sign-off gate**, engine run against the live system, red-finding routing (cap 2 rounds; env failures don't consume rounds), controller-only held-out pass, and regression re-runs. Codifies the orchestration proven by the enterprice_agent pilots (Stage A plumbing / Stage B spec-first full loop).
+
+### Compatibility
+- Requires the standalone loop-verify engine + hurl only when actually driving a loop; non-adopted projects unaffected.
+
 ## [1.6.0] - 2026-07-15
 
 ### Added

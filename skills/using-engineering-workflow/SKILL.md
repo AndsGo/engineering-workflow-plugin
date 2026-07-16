@@ -5,7 +5,7 @@ description: "Use when starting any session with engineering work, or when unsur
 
 # Engineering Workflow — Flow Control
 
-This plugin provides 11 specialized skills that extend Superpowers with process and tool capabilities. These rules govern when and how they are invoked.
+This plugin provides 12 specialized skills that extend Superpowers with process and tool capabilities. These rules govern when and how they are invoked.
 
 ## Relationship with Superpowers
 
@@ -71,6 +71,7 @@ Match the user's intent to the correct skill. Check this routing table BEFORE re
 | Test page in browser, "does this work" | `e2e-browser-test` | This plugin |
 | Review code, check diff | `structured-review` | This plugin |
 | Security sensitive changes | `security-audit` | This plugin |
+| Acceptance scenarios, "跑验收", "verify scenarios" | `loop-verify` | This plugin |
 | Ship, commit, create PR | `ship-and-pr` | This plugin |
 | Update docs after shipping | `document-sync` | This plugin |
 | Resolve PR review comments | `resolve-pr-feedback` | This plugin |
@@ -160,7 +161,7 @@ Rule 4 is an **invariant floor** item (Rule 0.3 #5): it applies at every tier, T
 | PASS | → continue to ship |
 | FAIL | → fix P0/P1 issues → re-audit (do NOT ship) |
 
-## Available Skills (11)
+## Available Skills (12)
 
 | Skill | Trigger |
 |-------|---------|
@@ -175,6 +176,7 @@ Rule 4 is an **invariant floor** item (Rule 0.3 #5): it applies at every tier, T
 | `resolve-pr-feedback` | Batch-process PR review comments |
 | `document-sync` | Sync docs to match shipped code |
 | `learnings-refresh` | Maintain docs/learnings/ — detect stale, cluster, regenerate INDEX |
+| `loop-verify` | Drive the scenario-protocol acceptance loop (sign-off → run → green) |
 
 ## Workflow State
 
