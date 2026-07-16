@@ -23,10 +23,13 @@ description: "Drive the scenario-protocol acceptance loop: draft/validate scenar
 ## Prerequisites（第一步就查，缺了先修环境）
 
 ```bash
-python -m loop_verify.cli --version   # loop-verify 引擎（pip install -e <loop-engine>）
+loop-verify --version                 # 引擎（pip install -e <loop-engine>）
 hurl --version                        # 传感器（winget install Orange-OpenSource.Hurl）
 grep -q "scenario-protocol" CLAUDE.md # 项目已采纳
 ```
+
+- console script 不在 PATH 时（Windows editable 安装常见），等价调用：`python -m loop_verify.cli ...` ——下文所有 `loop-verify` 命令同理替换。
+- 目标 server 地址：默认读场景文件 `base_url_env` 声明的环境变量；`--base-url` 是显式覆盖（契约以 env var 为准，flag 为引擎便利项）。
 
 ## The Loop
 
