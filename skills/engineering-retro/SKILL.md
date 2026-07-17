@@ -1,6 +1,7 @@
 ---
 name: engineering-retro
-description: "Use weekly, at project milestones, or when the user says 'retro', 'retrospective', 'what did we accomplish', 'weekly review'. Analyzes git history to produce quantitative engineering metrics and qualitative reflections. Triggers knowledge-compound for learnings capture."
+description: "Git-history-based engineering retrospective for a time window: quantitative metrics plus qualitative reflections."
+disable-model-invocation: true
 ---
 
 # Engineering Retrospective
@@ -10,6 +11,8 @@ Quantitative git analysis + qualitative reflection to understand what was accomp
 **Origin:** Patterns extracted from gstack `/retro` (time-windowed git analysis, per-contributor attribution, midnight-aligned boundaries) with knowledge-compound integration.
 
 ## When to Use
+
+**User-invoked** (`/engineering-retro`; fallback `/engineering-workflow:engineering-retro`) — the model suggests it but cannot self-invoke. Occasions to suggest it:
 
 - Weekly engineering review (Friday or Monday)
 - End of a sprint or project milestone
@@ -321,7 +324,7 @@ If the retro revealed recurring issues (same bug type appearing multiple times, 
 
 ## Integration with Superpowers
 
-- **Triggers:** Weekly cadence, project milestones, user request
+- **Triggers:** user-invoked (`/engineering-retro`); suggested on weekly cadence, project milestones, or user request
 - **Output feeds:** `knowledge-compound` for learnings capture
 - **References:** All custom skills — the retro report suggests which skills could address identified issues
 - **Complements:** `persona` memory — retro insights about the user's work patterns can inform persona preferences

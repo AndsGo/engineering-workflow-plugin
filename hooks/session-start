@@ -74,13 +74,13 @@ LEARNINGS_THRESHOLD_REFRESH=${LEARNINGS_THRESHOLD_REFRESH:-50}
 
 learnings_signal=""
 if [ "$learnings_count" -ge "$LEARNINGS_THRESHOLD_INDEX" ] && [ ! -f "docs/learnings/INDEX.md" ]; then
-  learnings_signal="${learnings_count} learnings without INDEX.md — consider running learnings-refresh"
+  learnings_signal="${learnings_count} learnings without INDEX.md — suggest the user run /learnings-refresh (user-invoked)"
 fi
 if [ "$learnings_count" -ge "$LEARNINGS_THRESHOLD_REFRESH" ]; then
   if [ -n "$learnings_signal" ]; then
     learnings_signal="${learnings_signal}; ${learnings_count} exceeds refresh threshold (${LEARNINGS_THRESHOLD_REFRESH})"
   else
-    learnings_signal="${learnings_count} exceeds refresh threshold (${LEARNINGS_THRESHOLD_REFRESH}) — consider running learnings-refresh"
+    learnings_signal="${learnings_count} exceeds refresh threshold (${LEARNINGS_THRESHOLD_REFRESH}) — suggest the user run /learnings-refresh (user-invoked)"
   fi
 fi
 

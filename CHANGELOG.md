@@ -2,6 +2,26 @@
 
 All notable changes to this plugin are documented here. Written for users, not contributors.
 
+## [1.8.0] - 2026-07-17
+
+First-tier borrowings from a deep comparison with [mattpocock/skills](https://github.com/mattpocock/skills) (MIT; concepts adapted with attribution, no text copied).
+
+### Added
+- **Domain glossary convention** (`references/domain-glossary.md`, advisory): a project MAY keep a pure-vocabulary `CONTEXT.md` at the repo root (project terms + `_Avoid:` banned near-synonyms; lazy-created, inline-updated, user-confirmed). When present, analysis skills read it first — new READ step **L0** in `learnings-protocol.md` — and adopt its vocabulary; `grill-me` offers to record newly coined/sharpened terms. Decisions stay in the Decision track — no separate ADR system.
+- **Skill-authoring methodology** (`docs/skill-authoring.md`): predictability as the root virtue, context-load vs cognitive-load economics, leading words, information-hierarchy ladder, per-sentence no-op hunting, failure-mode table (premature completion / duplication / sediment / sprawl / no-op / negation / negative space) — fused with this repo's own invariants (Iron Law + Red Flags, blind-eval for judgment artifacts, scaffolding-vs-invariant, conservative-wins). Adapted from `writing-great-skills`.
+- **Maintenance sync invariants** (repo `CLAUDE.md`): the 8-surface sync list for any skill add/remove/rename/behavior change, the "router that lies" rule for the meta skill, count-avoidance rules, and the versioned-contract discipline. Motivated by real drift: skill-count prose had rotted across three releases (9 → 10 → actual 13).
+
+### Changed
+- **`engineering-retro` and `learnings-refresh` are now user-invoked** (`disable-model-invocation: true`): run them as `/engineering-retro` / `/learnings-refresh`; the model suggests them (weekly/monthly cadence, threshold signals) but can no longer self-invoke. Rationale: deliberate maintenance rituals whose descriptions were paying permanent context cost without needing autonomous triggering. All routing surfaces (meta skill, README, guide, session-start signals) now use suggest-the-user phrasing. The other 11 skills stay model-invoked.
+- **`grill-me`**: Method rule 3 sharpened into a facts/decisions dichotomy — facts (file/grep/git-discoverable) are looked up, decisions always go to the user and are awaited, even when a plausible answer exists; a matching Red Flags row added. Targets the self-answering failure mode when grill-me runs inside another flow.
+- **`learnings-protocol.md` v1.0 → v1.1**: adds READ L0 (domain glossary), rephrases MAINTAIN for the user-invoked `/learnings-refresh`, and completes the participation table (`grill-me`: READ + suggest WRITE; `loop-verify`: suggest WRITE (light)).
+- **`document-sync`**: ARCHITECTURE.md audit now runs the counted-enumerations check (F2), including counts inside ASCII diagrams.
+- Drift fixed: ARCHITECTURE/README "10 skills" remnants, CONTRIBUTING layout tree (was missing grill-me / learnings-refresh / loop-verify).
+
+### Compatibility
+- Conservative-wins throughout: projects without `CONTEXT.md` see zero behavior change; the protocol bump is non-breaking (L0 skips silently).
+- **UX change:** "retro" / "refresh learnings" phrases no longer auto-load those two skills — type `/engineering-retro` / `/learnings-refresh` (or `/engineering-workflow:<name>`). Threshold semantics (30+/50+) survive in the session-start signal.
+
 ## [1.7.0] - 2026-07-16
 
 ### Added

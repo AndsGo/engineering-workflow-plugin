@@ -76,7 +76,8 @@ Match the user's intent to the correct skill. Check this routing table BEFORE re
 | Update docs after shipping | `document-sync` | This plugin |
 | Resolve PR review comments | `resolve-pr-feedback` | This plugin |
 | Record learnings, compound | `knowledge-compound` | This plugin |
-| Weekly retro | `engineering-retro` | This plugin |
+| Weekly retro | `engineering-retro` — **user-invoked**: suggest the user run `/engineering-retro` | This plugin |
+| Maintain/refresh learnings | `learnings-refresh` — **user-invoked**: suggest the user run `/learnings-refresh` | This plugin |
 | Debug, fix bug | `superpowers:systematic-debugging` | SP first |
 
 ### Rule 2: Flow Sequence Gates
@@ -134,11 +135,13 @@ At **T1+**, these thoughts mean STOP — you are about to skip a flow gate. (At 
 All learning-touching skills MUST follow `references/learnings-protocol.md`.
 
 In short:
-- **READ:** INDEX-first → 📚 synthesis preferred → targeted reads → Grep fallback. Cite sources.
+- **READ:** domain glossary first if present (L0) → INDEX-first → 📚 synthesis preferred → targeted reads → Grep fallback. Cite sources.
 - **WRITE:** suggest `knowledge-compound`, never write directly. Frontmatter required (`track`, `status`).
-- **MAINTAIN:** `learnings-refresh` skill — run monthly or when session-start signal fires.
+- **MAINTAIN:** `/learnings-refresh` (user-invoked) — suggest it to the user monthly or when the session-start signal fires; you cannot self-invoke it.
 
-If `docs/learnings/INDEX.md` does not exist and the project has ≥30 learnings, run `learnings-refresh` to auto-generate it.
+If `docs/learnings/INDEX.md` does not exist and the project has ≥30 learnings, suggest the user run `/learnings-refresh` (fallback name: `/engineering-workflow:learnings-refresh`) to auto-generate it.
+
+**Domain glossary (opt-in):** a project MAY keep a `CONTEXT.md` domain glossary at the repo root. When present, skills read it first and adopt its vocabulary; when a session coins or sharpens a project term, offer to record it there. Convention: `references/domain-glossary.md`. No glossary → nothing changes (conservative-wins).
 
 This is not optional. Prior knowledge lookup prevents repeating mistakes. Knowledge output prevents losing insights.
 
@@ -171,11 +174,11 @@ Rule 4 is an **invariant floor** item (Rule 0.3 #5): it applies at every tier, T
 | `grill-me` | Stress-test a plan/design interactively (live) |
 | `ship-and-pr` | Commit, push, create PR |
 | `security-audit` | Security review on sensitive changes |
-| `engineering-retro` | Weekly/milestone retrospective |
+| `engineering-retro` | Weekly/milestone retrospective — **user-invoked** (`/engineering-retro`) |
 | `e2e-browser-test` | Browser testing on affected pages |
 | `resolve-pr-feedback` | Batch-process PR review comments |
 | `document-sync` | Sync docs to match shipped code |
-| `learnings-refresh` | Maintain docs/learnings/ — detect stale, cluster, regenerate INDEX |
+| `learnings-refresh` | Maintain docs/learnings/ — detect stale, cluster, regenerate INDEX — **user-invoked** (`/learnings-refresh`) |
 | `loop-verify` | Drive the scenario-protocol acceptance loop (sign-off → run → green) |
 
 ## Workflow State

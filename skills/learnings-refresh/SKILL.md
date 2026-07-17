@@ -1,6 +1,7 @@
 ---
 name: learnings-refresh
-description: "Use monthly, at project milestones, or when LEARNINGS_COUNT exceeds threshold (30+ without INDEX, 50+ with). Audits docs/learnings/ for staleness, missing INDEX, duplicate themes (≥3 same-category), and orphaned references to deleted code paths. Produces a per-learning recommendation table for user-confirmed keep/update/replace/archive/synthesize actions. Triggers on: 'refresh learnings', 'review compound knowledge', 'audit our learnings', 'curate learnings'."
+description: "Audit and curate docs/learnings/ — staleness detection, theme clustering, INDEX regeneration — with per-action user confirmation."
+disable-model-invocation: true
 ---
 
 # Learnings Refresh
@@ -15,9 +16,11 @@ Scripts require Python 3.7+. Use:
 
 ## When to Use
 
+**User-invoked** (`/learnings-refresh`; fallback `/engineering-workflow:learnings-refresh`) — the model suggests it but cannot self-invoke. Occasions to suggest it:
+
 - Monthly cadence (first business day)
 - When `LEARNINGS_SIGNAL` appears in session-start state info (count ≥ 30 without INDEX, or ≥ 50)
-- When user says "refresh learnings", "audit our learnings", "review compound knowledge", "curate learnings"
+- When the user asks to refresh/audit/curate the learnings
 - After `engineering-retro` flags recurring patterns (≥3 same area)
 
 ## Workflow

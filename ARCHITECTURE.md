@@ -18,12 +18,14 @@ SKILL.md load         → Detailed workflow injected WHEN skill is invoked
 
 ```
 ┌─────────────────────────────────────────────┐
-│ This Plugin: Process & Tools (10 skills)     │
+│ This Plugin: Process & Tools                 │
+│ (12 process skills + 1 meta)                 │
 │ structured-review, ship-and-pr, security-    │
 │ audit, knowledge-compound, plan-review-      │
-│ personas, engineering-retro, e2e-browser-    │
-│ test, resolve-pr-feedback, document-sync,    │
-│ learnings-refresh                            │
+│ personas, grill-me, engineering-retro,       │
+│ e2e-browser-test, resolve-pr-feedback,       │
+│ document-sync, learnings-refresh,            │
+│ loop-verify + using-engineering-workflow     │
 ├─────────────────────────────────────────────┤
 │ Superpowers: Discipline (required)           │
 │ TDD, systematic-debugging, verification-     │
@@ -164,9 +166,9 @@ The plugin treats `docs/learnings/` as a managed artifact with three phases, all
 
 1. **READ** — every analysis skill consults INDEX-first → synthesis docs → individual learnings → grep fallback. Sources are cited in skill output.
 2. **WRITE** — `knowledge-compound` is the sole writer. Required frontmatter: `track`, `status`. Optional: `category`, `last-verified`, `superseded-by`. Existing learnings without frontmatter remain valid.
-3. **MAINTAIN** — implemented by `learnings-refresh` skill. Run monthly, or when session-start hook signals threshold crossing. Detection scripts are read-only; user confirms each curation action.
+3. **MAINTAIN** — implemented by the user-invoked `/learnings-refresh` skill. Suggested monthly, or when the session-start hook signals a threshold crossing. Detection scripts are read-only; user confirms each curation action.
 
-The protocol is versioned (v1.0). All 10 learning-touching skills cite it explicitly; per-skill semantic filtering (e.g., security-audit's category list) layers on top.
+The protocol is versioned (current version in its file header). Every learning-touching skill cites it explicitly (the authoritative list is the protocol's own Skill Participation Reference table); per-skill semantic filtering (e.g., security-audit's category list) layers on top.
 
 **Why two locations?** `docs/learnings/` is durable knowledge shared with the team. `.context/` is session-specific state that gates enforce (e.g., "has a review been run?").
 

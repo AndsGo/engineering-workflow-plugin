@@ -122,6 +122,7 @@ Read each documentation file and cross-reference against the diff.
 ### ARCHITECTURE.md
 - Do component descriptions match current code?
 - Are diagrams still accurate?
+- **Counted enumerations** — same check as the CLAUDE.md/AGENTS.md section's **Counted enumerations** below: `(N skills)` / `N components` patterns (including inside ASCII diagrams) vs actual count
 - Be conservative — only update things clearly contradicted by the diff
 
 ### CONTRIBUTING.md

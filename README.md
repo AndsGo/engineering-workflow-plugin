@@ -118,8 +118,8 @@ Optional tools are checked at session start. Missing tools produce a one-line no
 | **grill-me** | Stress-test a plan/design interactively (live, one question at a time) | "grill me", "拷问这个设计" |
 | **ship-and-pr** | Pre-flight, commit, push, create PR | "ship it", "create PR" |
 | **security-audit** | OWASP Top 10 + STRIDE threat model | Auth/input/API/secrets changes |
-| **engineering-retro** | Git-based engineering retrospective | "retro", weekly review |
-| **learnings-refresh** | Maintain docs/learnings/ — detect stale, cluster, regenerate INDEX | Monthly, threshold-triggered, "refresh learnings" |
+| **engineering-retro** | Git-based engineering retrospective | **User-invoked:** `/engineering-retro` (suggested weekly / at milestones) |
+| **learnings-refresh** | Maintain docs/learnings/ — detect stale, cluster, regenerate INDEX | **User-invoked:** `/learnings-refresh` (suggested monthly / on threshold signal) |
 | **e2e-browser-test** | Browser testing on diff-affected pages | "test the site", "e2e test" |
 | **resolve-pr-feedback** | Batch-process PR review comments | "resolve PR comments" |
 | **document-sync** | Sync docs to match shipped code | After shipping, "update docs" |
@@ -140,7 +140,7 @@ Optional tools are checked at session start. Missing tools produce a one-line no
 ```
 ┌─────────────────────────────────────────────────────────┐
 │ This Plugin: Process & Tools                             │
-│ 10 skills + 2 hooks + flow gates                        │
+│ 12 process skills + 1 meta + 2 hooks + flow gates       │
 │ Review → Ship → Document → Knowledge → Retro            │
 ├─────────────────────────────────────────────────────────┤
 │ Superpowers: Discipline (required dependency)            │
@@ -163,7 +163,9 @@ GATE 5: Session End → Knowledge   (always offer to capture learnings)
 
 ### Knowledge Loop
 
-Every analysis skill reads `docs/learnings/INDEX.md` first (when present), prefers 📚 synthesis docs, then targets specific learnings. Falls back to `Grep docs/learnings/` when INDEX is absent. The complete read/write/maintain contract is in `skills/using-engineering-workflow/references/learnings-protocol.md`. (The MAINTAIN-phase implementation `learnings-refresh` is shipped — invoke via "refresh learnings".)
+Every analysis skill reads `docs/learnings/INDEX.md` first (when present), prefers 📚 synthesis docs, then targets specific learnings. Falls back to `Grep docs/learnings/` when INDEX is absent. The complete read/write/maintain contract is in `skills/using-engineering-workflow/references/learnings-protocol.md` (versioned — see its header). (The MAINTAIN-phase implementation `learnings-refresh` is shipped — **user-invoked**, run `/learnings-refresh`.)
+
+Projects may optionally keep a `CONTEXT.md` **domain glossary** at the repo root; when present, skills read it before analysis (protocol step L0) and adopt its vocabulary. Convention: `skills/using-engineering-workflow/references/domain-glossary.md`. No glossary → no behavior change.
 
 ```
                     ┌─── knowledge-compound WRITES ───┐

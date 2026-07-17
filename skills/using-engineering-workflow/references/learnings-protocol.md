@@ -1,11 +1,13 @@
-# Learnings Protocol — v1.0
+# Learnings Protocol — v1.1
 
-**Versioning:** This is protocol v1.0. Breaking changes will document migration when needed.
+**Versioning:** This is protocol v1.1. Breaking changes will document migration when needed.
+**v1.1 (2026-07-17):** added READ step L0 (domain glossary); MAINTAIN trigger rephrased for the user-invoked `/learnings-refresh`; participation table completed (`grill-me`, `loop-verify`). No breaking changes.
 
 Any skill that reads, writes, or maintains `docs/learnings/` MUST follow this protocol. Skills cite this document and inherit its rules; per-skill semantics (e.g., security-audit's category filter) layer on top.
 
 ## READ Phase (analysis skills, before main work)
 
+0. **L0 — Domain glossary:** If `CONTEXT.md` exists at the repo root, read it before L1 and adopt its vocabulary in output (see `domain-glossary.md`). Absent glossary → skip silently.
 1. **L1 — INDEX-first:** If `docs/learnings/INDEX.md` exists, read it. Use the Domain section relevant to the changed files / scope to build a candidate list.
 2. **L2 — Synthesis-preferred:** When the Domain has a 📚 synthesis doc, read it FIRST. A synthesis summarizes 3+ individual learnings; reading it can replace reading the individuals.
 3. **L3 — Targeted reads:** Read individual learning files when the synthesis points to them, OR when the Domain has no synthesis.
@@ -23,7 +25,7 @@ Any skill that reads, writes, or maintains `docs/learnings/` MUST follow this pr
 
 The MAINTAIN phase is implemented by the `learnings-refresh` skill (current).
 
-1. Triggered monthly, by user phrase ("refresh learnings", "audit our learnings"), or when session-start hook signals threshold crossed.
+1. Runs when the user invokes `/learnings-refresh` (the skill is user-invoked; the model cannot self-invoke it). Suggest it monthly, when the user asks to refresh/audit learnings, or when the session-start hook signals a threshold crossing.
 2. Never auto-mutate. Detection is read-only; user confirms each action.
 3. Preserve INDEX-authored sections by heading allowlist (`## Refresh Cycle`, `## How to Use This Index`, `## Notes for Future Refreshes`).
 4. Apply curation actions (archive / supersede / synthesize) only after explicit user confirmation per row.
@@ -53,6 +55,8 @@ Existing learnings without frontmatter remain valid. Parsers default:
 | `learnings-refresh` | MAINTAIN (primary) |
 | `structured-review` | READ + suggest WRITE |
 | `plan-review-personas` | READ |
+| `grill-me` | READ + suggest WRITE |
+| `loop-verify` | suggest WRITE (light) |
 | `security-audit` | READ + suggest WRITE |
 | `e2e-browser-test` | READ + suggest WRITE |
 | `ship-and-pr` | READ + suggest WRITE |

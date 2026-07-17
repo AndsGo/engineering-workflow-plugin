@@ -35,17 +35,22 @@ engineering-workflow-plugin/
 │   ├── session-start               # SessionStart: dependency check + flow injection
 │   └── pre-commit-gate             # PreToolUse: commit/push advisory gate
 ├── skills/
-│   ├── using-engineering-workflow/  # Meta skill: flow control rules
+│   ├── using-engineering-workflow/  # Meta skill: flow control rules + references/ (protocols, domain-glossary) + tests/
 │   ├── structured-review/          # + reviewers/*.md + checklist.md
 │   ├── knowledge-compound/         # + references/*.md
 │   ├── plan-review-personas/       # + reviewers/*.md
+│   ├── grill-me/
 │   ├── ship-and-pr/
 │   ├── security-audit/             # + references/*.md
-│   ├── engineering-retro/
+│   ├── engineering-retro/          # user-invoked (/engineering-retro)
+│   ├── learnings-refresh/          # user-invoked (/learnings-refresh); + scripts/*.py + tests/ + evals/
+│   ├── loop-verify/
 │   ├── e2e-browser-test/
 │   ├── resolve-pr-feedback/
 │   └── document-sync/
 ├── setup                           # Install script
+├── CLAUDE.md                       # Maintenance sync invariants (auto-loaded in repo sessions)
+├── docs/                           # skill-authoring.md, engineering-workflow-guide.md, learnings/, plans/, specs/
 ├── README.md                       # User-facing docs
 ├── ARCHITECTURE.md                 # Design decisions
 ├── CONTRIBUTING.md                 # This file
@@ -63,18 +68,19 @@ engineering-workflow-plugin/
 
 ### Adding a new skill
 
-1. Create `skills/<skill-name>/SKILL.md` with frontmatter:
+1. Decide the invocation mode first (see Skill Writing Standards → Invocation)
+2. Create `skills/<skill-name>/SKILL.md` with frontmatter:
    ```yaml
    ---
    name: skill-name
    description: "Use when <triggering conditions>. Also use when <alternative triggers>."
+   # user-invoked instead? add disable-model-invocation: true and make the
+   # description a human-facing one-liner (no trigger phrasing)
    ---
    ```
-2. Follow the established patterns: Iron Law, Process Flow (Graphviz), Red Flags table, Prior Knowledge Lookup, Knowledge Output, Integration with Superpowers
-3. Add the skill to `skills/using-engineering-workflow/SKILL.md` routing table
-4. Update README.md skills table
-5. Update ARCHITECTURE.md if it introduces a new pattern
-6. If your skill reads or writes `docs/learnings/`, follow `skills/using-engineering-workflow/references/learnings-protocol.md` and cite it in your Step 0.
+3. Follow the established patterns: Iron Law, Process Flow (Graphviz), Red Flags table, Prior Knowledge Lookup, Knowledge Output, Integration with Superpowers
+4. Sweep ALL sync surfaces per `CLAUDE.md` 同步不变量 (8 surfaces, version ×3 included — the canonical list lives there)
+5. If your skill reads or writes `docs/learnings/`, follow `skills/using-engineering-workflow/references/learnings-protocol.md` (add yourself to its participation table) and cite it in your Step 0.
 
 ### Modifying hooks
 
@@ -87,11 +93,18 @@ engineering-workflow-plugin/
 
 ## Skill Writing Standards
 
-Follow [Superpowers writing-skills](https://github.com/obra/superpowers) methodology:
+**Methodology** — predictability, leading words, information hierarchy, pruning/no-op hunting, failure modes, and the blind-eval requirement for judgment artifacts — lives in `docs/skill-authoring.md`. This section is the repo-mechanical checklist only.
+
+### Invocation (decide FIRST — canonical criterion)
+
+- **Model-invoked** (default): choose ONLY if the agent must reach the skill autonomously mid-flow, or another skill invokes it. Its `description` is model-facing and is loaded into every session (permanent context cost) — that cost must buy auto-triggering.
+- **User-invoked**: everything else — deliberate, human-started rituals (currently: `engineering-retro`, `learnings-refresh`). Add `disable-model-invocation: true`; the model can only *suggest* `/skill-name`, never self-invoke.
+- Flipping a skill's invocation is a behavior change: sweep every routing surface per the sync invariants in `CLAUDE.md`.
 
 ### Frontmatter Rules
-- Only `name` and `description` fields
-- `description` starts with "Use when..." — triggering conditions only
+- `name` and `description`; user-invoked skills additionally set `disable-model-invocation: true`. No other fields.
+- Model-invoked: `description` starts with "Use when..." — triggering conditions only
+- User-invoked: `description` is a human-facing one-liner (what it does, no trigger lists)
 - **Never** summarize the workflow in the description (CSO rule)
 - Max 500 characters for description
 
@@ -122,7 +135,7 @@ One logical change per commit. If you modified a skill AND updated its documenta
 
 ## Pull Request Checklist
 
-- [ ] SKILL.md frontmatter complies (name + description only, "Use when..." format)
+- [ ] SKILL.md frontmatter complies with Skill Writing Standards → Frontmatter Rules (invocation mode decided; user-invoked skills set `disable-model-invocation: true`; model-invoked descriptions use "Use when...")
 - [ ] No workflow summary in description (CSO rule)
 - [ ] New skills added to meta skill routing table
 - [ ] README.md updated if skills/hooks changed

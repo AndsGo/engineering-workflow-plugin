@@ -1,6 +1,6 @@
 # Engineering Workflow Guide
 
-三层工程栈使用指南。Superpowers 提供纪律底线，11 个自定义 skill 提供流程和工具。流程强度按改动体量自动缩放（见下方「流程自动缩放」）。
+三层工程栈使用指南。Superpowers 提供纪律底线，自定义 skills 提供流程和工具。流程强度按改动体量自动缩放（见下方「流程自动缩放」）。
 
 ## 快速参考
 
@@ -17,8 +17,8 @@
 | 提交并开 PR | "ship it" | ship-and-pr |
 | 端到端浏览器测试 | "测试页面" / "e2e test" | e2e-browser-test |
 | 记录经验教训 | "compound" / "记录一下" | knowledge-compound |
-| 周复盘 | "retro" | engineering-retro |
-| 月度复盘 / 维护 learnings | "refresh learnings" / "audit learnings" | learnings-refresh |
+| 周复盘 | 用户输入 `/engineering-retro`（user-invoked，agent 只建议不自动调用） | engineering-retro |
+| 月度复盘 / 维护 learnings | 用户输入 `/learnings-refresh`（user-invoked，agent 只建议不自动调用） | learnings-refresh |
 | 同步文档 | "update docs" / "同步文档" | document-sync |
 | 处理 PR 反馈 | "resolve PR comments" | resolve-pr-feedback |
 
@@ -158,8 +158,8 @@ ship-and-pr 完成后会提示:
 ### 场景 3: 周五复盘
 
 ```
-你: "retro"
-→ engineering-retro 触发:
+你: /engineering-retro   （user-invoked：说 "retro" 时 agent 会建议你运行它，但不能替你调用）
+→ engineering-retro 执行:
    1. 分析过去 7 天的 git 提交
    2. 按类别分类 (features, bugs, tests, refactor...)
    3. 计算健康指标 (test ratio, bug rate, churn)
@@ -303,8 +303,8 @@ TDD 和 verification 是不可跳过的纪律。structured-review 和 security-a
 
 ### Q: docs/learnings/ 会不会越来越多？
 
-会，但有 `learnings-refresh` skill 来管理：
-- 每月初手工触发"refresh learnings"
+会，但有 `learnings-refresh` skill 来管理（user-invoked，需用户输入 `/learnings-refresh`）：
+- 每月初手工触发 `/learnings-refresh`
 - session-start hook 在 30+/50+ 阈值发出软信号（`LEARNINGS_THRESHOLD_INDEX` / `LEARNINGS_THRESHOLD_REFRESH` 可调）
 - skill 自动检测：cited 代码路径已删 / 同 category ≥3 条（可合并）/ 长期未碰
 - 所有动作（archive / supersede / synthesize）需用户逐行确认 — 永不自动改动
@@ -336,4 +336,4 @@ TDD 和 verification 是不可跳过的纪律。structured-review 和 security-a
 
 ### Q: Learnings Protocol 是什么？
 
-`skills/using-engineering-workflow/references/learnings-protocol.md` 是版本化的契约，定义所有 learning-touching skill 必须遵守的 READ / WRITE / MAINTAIN 三阶段。10 个 skill 都引用它（meta + 9 个 consumer skill），不重复散文。修改契约是 plugin 的破坏性变更。
+`skills/using-engineering-workflow/references/learnings-protocol.md` 是版本化的契约，定义所有 learning-touching skill 必须遵守的 READ / WRITE / MAINTAIN 三阶段。所有 learning-touching skill 都引用它（权威名单见协议自身的 Skill Participation Reference 表），不重复散文。修改契约是 plugin 的破坏性变更。

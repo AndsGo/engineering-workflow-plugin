@@ -28,7 +28,7 @@ READ relevant prior knowledge per `using-engineering-workflow/references/learnin
 
 1. **Interview relentlessly, ONE question at a time.** Never batch questions — a single question per turn, then wait for the answer. Walk *down* the decision tree: resolve dependencies between decisions one by one (a later question often depends on an earlier answer).
 2. **Recommend an answer for every question.** Don't just ask — state the answer you'd choose and *why* (one line). The user corrects or confirms; either way you converge faster than open-ended interrogation.
-3. **Explore the codebase instead of asking, when the answer is discoverable.** If a question can be settled by reading a file, running a grep, or checking git history — do that first and report what you found, rather than spending a question on it.
+3. **Split facts from decisions.** *Facts* — anything settleable by reading a file, running a grep, or checking git history — look up yourself and report; never spend a question on them. *Decisions* — trade-offs, preferences, scope calls — always go to the user, and you wait for the answer, even when a plausible answer is obvious to you. An agent that answers its own questions has broken the loop; this matters most when grill-me is driven from within another flow.
 4. **Surface assumptions and failure modes**, not just preferences: "this assumes X — is that true?", "what happens when Y fails halfway?".
 
 ## Exit Criteria
@@ -37,7 +37,7 @@ Stop when **shared understanding is reached**: every branch of the decision tree
 
 ## Hand-off
 
-If the grilling surfaced a non-obvious decision (a real trade-off where reasoning drove the choice), suggest recording it via `knowledge-compound` (Decision track). If it exposed that the underlying idea is under-explored, route back to `superpowers:brainstorming`; if the plan itself has holes, to `superpowers:writing-plans` / `plan-review-personas`.
+If the grilling surfaced a non-obvious decision (a real trade-off where reasoning drove the choice), suggest recording it via `knowledge-compound` (Decision track). If it coined a new project term or sharpened a fuzzy one, offer to record it in the project's `CONTEXT.md` domain glossary per `using-engineering-workflow/references/domain-glossary.md`. If it exposed that the underlying idea is under-explored, route back to `superpowers:brainstorming`; if the plan itself has holes, to `superpowers:writing-plans` / `plan-review-personas`.
 
 ## Red Flags — STOP
 
@@ -45,5 +45,6 @@ If the grilling surfaced a non-obvious decision (a real trade-off where reasonin
 |---------|---------|
 | "Let me ask these five things at once" | One question per turn. Batching breaks the dependency-resolution flow. |
 | "I'll just ask the user where X is" | If a file/grep/git answers it, look — don't spend a question. |
+| "The user is slow — I'll answer this decision myself and move on" | Decisions belong to the user. A self-answered decision voids the grilling. |
 | "I'll ask without suggesting an answer" | Every question carries your recommended answer + why. |
 | "Keep grilling, there's always more" | Converge. When the tree is resolved, say so and stop. |
