@@ -47,4 +47,5 @@ The payoff is a real loop: blind eval → catches a genuine gap → tighten the 
 ## Related
 
 - [[2026-07-06-scaffolding-vs-invariant]] — "a check that can actually fail" is the invariant this operationalizes for LLM artifacts.
+- [[2026-07-17-oracle-assertions-anchor-to-structure]] — the same theme on the mechanical-assertion side: a substring check satisfied by adjacent text is a check that cannot fail.
 - `skills/using-engineering-workflow/tests/README.md` — the reusable blind-eval protocol.

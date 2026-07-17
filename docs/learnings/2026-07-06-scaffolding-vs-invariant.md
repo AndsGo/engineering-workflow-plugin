@@ -48,4 +48,6 @@ Making "auto-scale process to change size" safe requires four bounds, because pr
 ## Related
 
 - [[2026-07-06-blind-eval-not-self-graded]] — the "check that can fail" invariant, applied to validating LLM-facing artifacts.
+- [[2026-07-17-mattpocock-borrowing-tiers]] — this lens applied to a borrowing decision (invariant-strengthening adopted first; orchestration scaffolding gated on real triggers).
+- [[2026-07-17-invocation-dichotomy-context-economics]] — the per-standing-instruction cost economics, applied to skill invocation modes.
 - `docs/specs/2026-07-04-process-auto-scaling-design.md` — the v1.4 decision this lens drove.
