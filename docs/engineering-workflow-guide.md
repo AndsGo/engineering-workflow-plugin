@@ -84,7 +84,7 @@
 → structured-review 触发:
    1. 搜索 docs/learnings/ 查找相关先验知识
    2. 两轮审查 (CRITICAL → INFORMATIONAL)
-   3. 并行派遣 reviewer agents (correctness, testing, +条件触发 security, maintainability)
+   3. 并行派遣 reviewer agents (correctness, testing, +条件触发 security, maintainability, spec-fidelity——存在可溯源 spec 时对照计划审「做的是不是要的东西」)
    4. 合并去重 → fix-first 修复 → 报告
 → 产出: Review Summary (PASS / PASS WITH NOTES / BLOCK)
 

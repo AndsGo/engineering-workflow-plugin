@@ -2,6 +2,24 @@
 
 All notable changes to this plugin are documented here. Written for users, not contributors.
 
+## [1.9.0] - 2026-07-17
+
+Second-tier borrowing ⑦ from the mattpocock/skills comparison (two-axis review, adapted with attribution).
+
+### Added
+- **Spec-fidelity axis in `structured-review`**: a 5th, conditional reviewer (`reviewers/spec-fidelity.md`) that activates when a traceable spec exists (new Step 0b resolution order: user-provided → docs/plans / docs/specs → commit-referenced issue → ask once for T2). It checks the diff against the spec in both directions — spec'd-but-missing/contradicted and unspecced substantive changes — with a claims-coverage summary. Findings form a separate **Spec axis**: never merged or re-ranked against Quality-axis findings (clean code can still build the wrong thing); a Spec-axis P1 blocks like any P1. Consequential mechanical edits (version bumps, sync sweeps) are explicitly not "smuggled scope".
+- **Fail-fast in Step 0**: a user-named ref must resolve and yield a non-empty diff before any reviewer is dispatched.
+- **Blind-eval fixtures + record** (`skills/structured-review/tests/`): 3 planted-deviation fixtures (missing+unspecced / contradiction+consequential-noise / partial+silent-reinterpretation+descoped-non-item); the shipped prompt passed 15/15 blind runs at the protocol's ≥5-per-fixture floor, with the eval record hash-pinned to the evaluated prompt.
+- **Committed consistency check** (`tests/consistency_check.py`): the sync invariants in repo CLAUDE.md now have a mechanical enforcement face (counts, routing rows by derivation, participation-table completeness, reviewer JSON contracts, fixture structure, eval-record freshness pin, version ×3) — run before any release. Supersedes the session-scoped scratchpad script from v1.8.
+
+### Changed (hardening from self-review)
+- Step 5 gains an **orchestrator-side backstop**: a Spec-axis finding marked `safe_auto` is treated as `gated_auto` — the reviewer-prompt rule now enforced on both sides (single-reviewer axis means the disagreement path can never fire).
+- Meta-skill routing rows for `structured-review` now name the spec axis (router-that-lies fix, RED-witnessed by the new check before repair).
+- `learnings-protocol.md` participation table completed for real: `resolve-pr-feedback` row added (v1.8's "completed" claim missed it — caught by the derivation-based completeness check).
+
+### Compatibility
+- No spec resolvable → the axis announces itself skipped and the review runs exactly as before. No behavior change for quality-only reviews.
+
 ## [1.8.0] - 2026-07-17
 
 First-tier borrowings from a deep comparison with [mattpocock/skills](https://github.com/mattpocock/skills) (MIT; concepts adapted with attribution, no text copied).

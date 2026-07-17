@@ -69,7 +69,7 @@ Match the user's intent to the correct skill. Check this routing table BEFORE re
 | Stress-test a plan/design interactively, "grill me" | `grill-me` | This plugin |
 | Implement code | `superpowers:subagent-driven-development` | SP first |
 | Test page in browser, "does this work" | `e2e-browser-test` | This plugin |
-| Review code, check diff | `structured-review` | This plugin |
+| Review code, check diff, verify diff matches plan/spec | `structured-review` | This plugin |
 | Security sensitive changes | `security-audit` | This plugin |
 | Acceptance scenarios, "跑验收", "verify scenarios" | `loop-verify` | This plugin |
 | Ship, commit, create PR | `ship-and-pr` | This plugin |
@@ -168,7 +168,7 @@ Rule 4 is an **invariant floor** item (Rule 0.3 #5): it applies at every tier, T
 
 | Skill | Trigger |
 |-------|---------|
-| `structured-review` | Code review before merge |
+| `structured-review` | Code review before merge (quality + spec-fidelity axes) |
 | `knowledge-compound` | Document learnings after tasks |
 | `plan-review-personas` | Stress-test plans before execution (async) |
 | `grill-me` | Stress-test a plan/design interactively (live) |

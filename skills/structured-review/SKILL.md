@@ -1,6 +1,6 @@
 ---
 name: structured-review
-description: "Use when reviewing code changes before merge or PR. Multi-role parallel review with confidence-gated findings, two-pass severity model, and fix-first heuristic. Complements superpowers:requesting-code-review with deeper structural analysis."
+description: "Use when reviewing code changes before merge or PR, or to verify a diff against its plan/spec ('does this match the plan?'). Multi-role parallel review with confidence-gated findings, two-pass severity model, a spec-fidelity axis, and fix-first heuristic. Complements superpowers:requesting-code-review with deeper structural analysis."
 ---
 
 # Structured Code Review
@@ -31,6 +31,7 @@ digraph review {
     rankdir=TB;
 
     "Determine diff scope" [shape=box];
+    "Resolve spec source (0b)" [shape=box];
     "Lookup prior knowledge" [shape=box style=filled fillcolor="#ffffcc"];
     "Read checklist.md" [shape=box];
     "CRITICAL pass" [shape=box style=filled fillcolor="#ffcccc"];
@@ -44,7 +45,8 @@ digraph review {
     "Present gated/manual findings" [shape=box];
     "Summary report" [shape=doublecircle];
 
-    "Determine diff scope" -> "Lookup prior knowledge";
+    "Determine diff scope" -> "Resolve spec source (0b)";
+    "Resolve spec source (0b)" -> "Lookup prior knowledge";
     "Lookup prior knowledge" -> "Read checklist.md";
     "Read checklist.md" -> "CRITICAL pass";
     "CRITICAL pass" -> "Select reviewer roles from diff";
@@ -70,6 +72,19 @@ git diff "$BASE" --stat
 ```
 
 If on the base branch with no diff: **"Nothing to review — you're on the base branch."** Stop.
+
+**Fail fast on explicit refs:** if the user names a fixed point ("review since X"), verify it resolves (`git rev-parse --verify X`) and that the diff against it is non-empty BEFORE Step 1. A bad ref or empty diff must fail here — never inside a dispatched reviewer.
+
+### Step 0b: Resolve the Spec Source (Spec axis)
+
+Resolution order — first hit wins:
+
+1. User-provided (a path, issue/PR reference, or pasted spec)
+2. The work-item's plan/spec in `docs/plans/` or `docs/specs/` (most recent file matching the diff's scope)
+3. An issue/PR referenced by the branch's commit messages
+4. T2 work-item and none found → ask the user once
+
+Found → record the path/content for Steps 3–4. None → announce **"Spec axis skipped — no traceable spec"** and continue; the Quality axis is unaffected.
 
 ## Step 1: Lookup Prior Knowledge
 
@@ -118,8 +133,9 @@ Based on the diff content, select which reviewer agents to dispatch. Not every r
 |----------|----------------------------|
 | `security` | Auth, user input handling, public endpoints, secrets, crypto |
 | `maintainability` | New abstractions, large files, coupling changes, naming |
+| `spec-fidelity` | A traceable spec was resolved in Step 0b (plan, spec doc, or issue for this work-item) |
 
-**Selection rule:** Scan the diff stat and file names. If a conditional reviewer's trigger pattern matches any changed file or hunk, include it. When in doubt, include — a reviewer that finds nothing is cheap; a missed vulnerability is expensive.
+**Selection rule:** Scan the diff stat and file names. If a conditional reviewer's trigger pattern matches any changed file or hunk, include it. When in doubt, include — a reviewer that finds nothing is cheap; a missed vulnerability is expensive. Exception: `spec-fidelity` is not content-triggered — include it iff Step 0b resolved a spec, regardless of diff content.
 
 ## Step 4: Dispatch Parallel Reviewer Agents
 
@@ -141,6 +157,8 @@ For each selected reviewer:
 ```
 
 Dispatch all selected reviewers **in parallel** using the Agent tool with multiple concurrent calls.
+
+`spec-fidelity` is the only reviewer with **two inputs**: it additionally receives the resolved spec document (or its relevant sections) alongside the diff, plus any in-session spec revisions the user agreed to (the latest agreed revision is truth).
 
 ### JSON Output Contract
 
@@ -175,6 +193,8 @@ After all reviewers return:
    - Security findings: suppress below 0.60 (lower bar — missing vulns is costly)
    - All other findings: suppress below 0.75
 3. **Conflict resolution** — If reviewers disagree on autofix_class, **choose the more conservative** (safe_auto → gated_auto, never the reverse).
+4. **Axis separation** — `spec-fidelity` findings form the **Spec axis**; all other reviewers form the **Quality axis**. Never merge a spec finding with a quality finding and never re-rank across axes — clean code can still build the wrong thing, and one axis must not dilute the other. Deduplication applies within an axis only.
+5. **Spec-axis autofix backstop** — a Spec-axis finding marked `safe_auto` is treated as `gated_auto` (implementing a missing item or reverting a contradiction is always a behavior/content change). This enforces the reviewer prompt's "never safe_auto" rule on the orchestrator side too — the single-reviewer axis means rule 3's disagreement path can never fire for it.
 
 ## Step 6: INFORMATIONAL Pass
 
@@ -207,10 +227,14 @@ Present a structured report:
 ## Review Summary
 
 **Scope:** <base>..<head> (<N> files changed, +<added>/-<removed>)
-**Reviewers:** correctness, security, testing (3 of 4 triggered)
+**Reviewers:** correctness, security, testing (3 of 5 triggered)
+**Spec source:** <path | "none — Spec axis skipped">
 
 ### Merge Blockers (P0-P1)
 <list or "None">
+
+### Spec Fidelity (Spec axis — when a spec was resolved)
+<coverage summary (N claims: implemented/partial/missing/contradicted; unspecced changes) + findings — kept separate from Quality-axis findings>
 
 ### Auto-Fixed
 <list of safe_auto fixes applied>
@@ -229,7 +253,7 @@ Present a structured report:
 
 **Verdict rules:**
 - Any unresolved P0 → **BLOCK**
-- Any unresolved P1 → **BLOCK** (unless user explicitly overrides)
+- Any unresolved P1 → **BLOCK** (unless user explicitly overrides) — a Spec-axis P1 (diff contradicts or omits an explicit spec requirement) blocks exactly like a Quality-axis P1
 - Only P2/P3 remaining → **PASS WITH NOTES**
 - Nothing found → **PASS**
 

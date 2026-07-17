@@ -31,6 +31,7 @@
 
 ## 验证纪律
 
-- 判断类产物（分类 rubric、路由规则、门禁）上线前跑盲评：`skills/using-engineering-workflow/tests/README.md`。
+- 机械一致性：发布前 `python tests/consistency_check.py` 必须 GREEN（同步不变量的机械执行面）。
+- 判断类产物（分类 rubric、路由规则、门禁）上线前跑盲评：`skills/using-engineering-workflow/tests/README.md`。**收紧被测产物后必须对定稿版重跑**——4/4 只对跑过的那个版本成立。
 - manifest 改动后跑 `claude plugin validate . --strict`（只校验 marketplace manifest，不校验 SKILL.md frontmatter——frontmatter 靠人工/脚本核对）。
 - 对本仓库自身的改动同样受插件流程治理（Rule 0 分档、conservative-wins、手动提交）。

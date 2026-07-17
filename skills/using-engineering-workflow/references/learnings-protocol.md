@@ -1,7 +1,7 @@
 # Learnings Protocol — v1.1
 
 **Versioning:** This is protocol v1.1. Breaking changes will document migration when needed.
-**v1.1 (2026-07-17):** added READ step L0 (domain glossary); MAINTAIN trigger rephrased for the user-invoked `/learnings-refresh`; participation table completed (`grill-me`, `loop-verify`). No breaking changes.
+**v1.1 (2026-07-17):** added READ step L0 (domain glossary); MAINTAIN trigger rephrased for the user-invoked `/learnings-refresh`; participation table completed (`grill-me`, `loop-verify`, `resolve-pr-feedback`). No breaking changes.
 
 Any skill that reads, writes, or maintains `docs/learnings/` MUST follow this protocol. Skills cite this document and inherit its rules; per-skill semantics (e.g., security-audit's category filter) layer on top.
 
@@ -61,4 +61,5 @@ Existing learnings without frontmatter remain valid. Parsers default:
 | `e2e-browser-test` | READ + suggest WRITE |
 | `ship-and-pr` | READ + suggest WRITE |
 | `engineering-retro` | READ + suggest WRITE |
+| `resolve-pr-feedback` | suggest WRITE (light) |
 | `document-sync` | suggest WRITE (light) |

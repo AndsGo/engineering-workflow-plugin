@@ -112,7 +112,7 @@ Optional tools are checked at session start. Missing tools produce a one-line no
 | Skill | What it does | Triggered by |
 |-------|-------------|-------------|
 | **using-engineering-workflow** | Flow control rules (auto-injected) | Every session start |
-| **structured-review** | Multi-role code review (4 reviewer agents) | "review code", before merge |
+| **structured-review** | Multi-role code review (5 reviewer agents, quality + spec-fidelity axes) | "review code", "does this match the plan?", before merge |
 | **knowledge-compound** | Document learnings (Bug/Knowledge/Decision) | After tasks, debugging, session end |
 | **plan-review-personas** | Stress-test plans (3 adversarial personas, async) | After writing plans, before execution |
 | **grill-me** | Stress-test a plan/design interactively (live, one question at a time) | "grill me", "拷问这个设计" |

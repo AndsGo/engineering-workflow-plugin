@@ -1,7 +1,7 @@
 {
   "name": "engineering-workflow",
   "description": "Complete engineering workflow: process auto-scaling (per-work-item tiering), multi-role code review, knowledge accumulation with full lifecycle (READ/WRITE/MAINTAIN via learnings-refresh skill), security audit, browser testing, PR feedback resolution, and document sync. Extends Superpowers discipline layer with process and tool capabilities.",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "author": {
     "name": "Engineering Workflow Contributors"
   },

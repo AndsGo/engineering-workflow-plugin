@@ -22,6 +22,8 @@ claude --plugin-dir .
 
 **No build step required.** Skills are Markdown, hooks are Shell. Edit and reload.
 
+**Consistency check (run before any release):** `python tests/consistency_check.py` must print GREEN — it mechanically enforces the sync invariants in `CLAUDE.md` (counts, routing rows, participation table, reviewer contracts, fixture structure, version ×3, eval-record freshness).
+
 **To test changes:** Start a new Claude Code session with `--plugin-dir .` pointing to your checkout. Changes to SKILL.md files take effect on the next skill invocation. Changes to hooks take effect on the next session start.
 
 ## Directory Layout
