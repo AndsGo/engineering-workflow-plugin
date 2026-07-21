@@ -51,6 +51,7 @@ engineering-workflow-plugin/
 │   ├── resolve-pr-feedback/
 │   └── document-sync/
 ├── setup                           # Install script
+├── tests/consistency_check.py      # Mechanical sync-invariant check (must be GREEN before release)
 ├── CLAUDE.md                       # Maintenance sync invariants (auto-loaded in repo sessions)
 ├── docs/                           # skill-authoring.md, engineering-workflow-guide.md, learnings/, plans/, specs/
 ├── README.md                       # User-facing docs

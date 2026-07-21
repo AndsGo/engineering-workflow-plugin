@@ -56,11 +56,12 @@ Skills are prose instructions. The agent can choose to follow or ignore them. We
 
 The meta skill is the plugin's "brain". It defines:
 
-1. **Skill routing table** — maps user intent to the correct skill
-2. **5 Flow Gates** — enforces ordering (plan→review→execute→review→ship)
-3. **Anti-Skip table** — counters common rationalizations for skipping steps
-4. **Knowledge Loop rules** — every skill reads prior knowledge and offers to write new
-5. **RETHINK limit** — caps plan-review loops at 2 rounds
+1. **Rule 0 Triage** (v1.4; recalibrated v1.10) — classifies each work-item T0–T2 by nature-based signals (design divergence, ambiguity, verifiability, interaction breadth — size alone is not a signal) and scales the gates to the tier; a non-scaling invariant floor plus one-directional escalation conditions (E-1 security … E-4 irreversible) hold at every tier, checked against the actual diff before "done". Validated by blind held-out evals (`skills/using-engineering-workflow/tests/`)
+2. **Skill routing table** — maps user intent to the correct skill
+3. **Flow Gates** — enforce ordering (plan→review→execute→review→ship), applied per the work-item's tier
+4. **Anti-Skip table** — counters common rationalizations for skipping steps
+5. **Knowledge Loop rules** — every skill reads prior knowledge and offers to write new
+6. **RETHINK limit** — caps plan-review loops at 2 rounds
 
 The meta skill is injected into EVERY conversation via the SessionStart hook, regardless of which skill the user invokes. This ensures the flow rules are always in the agent's context.
 
@@ -91,6 +92,8 @@ Main agent → Spawn reviewer agents in parallel
 ```
 
 Each reviewer has its own prompt file (`reviewers/*.md`) with specific focus, confidence calibration, and output format.
+
+Since v1.9 `structured-review` runs **two axes**: the Quality axis (correctness, testing, security, maintainability) and the Spec axis (`spec-fidelity` — does the diff faithfully implement its originating plan/spec?). Findings are never merged or re-ranked across axes: clean code can still build the wrong thing, and one axis must not dilute the other.
 
 ### Pattern 3: Iron Law + Red Flags
 

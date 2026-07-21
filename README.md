@@ -200,7 +200,7 @@ Brainstorm → Plan → Review Plan → Execute (TDD) → Browser Test
                                     Knowledge Compound ← Retro
 ```
 
-## Process Auto-Scaling (v1.4)
+## Process Auto-Scaling (v1.4, recalibrated v1.10)
 
 `using-engineering-workflow` classifies each work-item into a tier and applies a matching amount of process — trivial changes skip ceremony, substantial ones get the full flow.
 
@@ -225,6 +225,7 @@ This plugin extracts and fuses patterns from three open-source projects:
 | [gstack](https://github.com/garrytan/gstack) (Garry Tan) | Review checklist, security audit (OWASP+STRIDE), ship workflow, document-release, retro, QA methodology |
 | [compound-engineering](https://github.com/EveryInc/compound-engineering-plugin) (Every) | Reviewer personas, confidence calibration, knowledge accumulation, PR feedback resolution, plan review |
 | [Superpowers](https://github.com/obra/superpowers) (Jesse Vincent) | Iron Laws, Red Flags tables, anti-rationalization patterns, Graphviz flow style |
+| [mattpocock/skills](https://github.com/mattpocock/skills) (Matt Pocock) | grill-me, domain glossary (CONTEXT.md), invocation dichotomy, skill-authoring methodology, spec-fidelity review axis |
 
 All skills are independently written (not copied), combining the best patterns from each source into a unified workflow.
 
