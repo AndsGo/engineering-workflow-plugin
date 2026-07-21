@@ -2,6 +2,24 @@
 
 三层工程栈使用指南。Superpowers 提供纪律底线，自定义 skills 提供流程和工具。流程强度按改动性质自动缩放（见下方「流程自动缩放」）。
 
+## 上手
+
+装上之后你**大部分时候什么都不用做**——正常说话，插件按意图自动路由（见「快速参考」），按改动性质自动决定用多重流程（见「流程自动缩放」），只在关键关口（审查、安全、发布）介入。
+
+```
+/plugin install superpowers@claude-plugins-official        # 前置依赖，一次
+/plugin marketplace add AndsGo/engineering-workflow-plugin  # 一次
+/plugin install engineering-workflow@engineering-workflow-marketplace
+```
+
+更多安装方式（团队共享、本地开发）见 README。
+
+**装完后每个会话自动发生什么：** SessionStart hook 检测 Superpowers 是否安装（缺失会持续提示）、注入全部流程规则、报告本会话工作流状态（是否已 review）、统计 `docs/learnings/` 数量（30+/50+ 时提示运行 `/learnings-refresh`）。`git commit` / `git push` 前有一道**建议性**（不阻断）检查，提醒是否漏了 review。
+
+**你的否决权在 announce 行：** T1+ 工作开工前会先打一行 `Tier: T<n> — <信号> → <流程>`（宽机械改动还会声明预期文件数）。觉得分轻了，回一句「treat as T2」即可，agent 必须照办。只有两个命令需要你手动输入（agent 只建议、不代跑）：`/engineering-retro` 和 `/learnings-refresh`。
+
+**典型的一天：** 改错别字 → 什么都不发生，直接完成（T0）。修 bug → 一行 Tier 声明，实现 + 测试 + 一次 review，PASS 后说「ship it」（T1）。新功能 → 先被 grill/brainstorm 对齐意图，出计划，计划被对抗 persona 审一轮，实施，review 双轴（质量 + 是否忠实实现计划）都过再 ship，最后被问「有什么值得记的吗」（T2）。周五输入 `/engineering-retro`。
+
 ## 快速参考
 
 | 我想... | 说什么 | 触发的 skill |
@@ -21,6 +39,7 @@
 | 月度复盘 / 维护 learnings | 用户输入 `/learnings-refresh`（user-invoked，agent 只建议不自动调用） | learnings-refresh |
 | 同步文档 | "update docs" / "同步文档" | document-sync |
 | 处理 PR 反馈 | "resolve PR comments" | resolve-pr-feedback |
+| 跑业务验收（已采纳 scenario-protocol 的项目） | "跑验收" / "verify scenarios" | loop-verify |
 
 ## 流程自动缩放 (Rule 0)
 
@@ -291,11 +310,21 @@ your-project/
 └── src/                         ← 你的代码
 ```
 
+## 项目级可选项
+
+以下全部 **opt-in**——不配置就零行为变化（conservative-wins：你项目 CLAUDE.md 里更严的规则永远赢，比如写了「always review」，插件的轻量化不会覆盖它）：
+
+| 可选项 | 是什么 | 怎么启用 |
+|---|---|---|
+| `docs/learnings/` | 经验复利的核心：修完 bug/做完决策时接受一次 compound 建议，之后每次审查/计划都会先读它 | 第一次接受 knowledge-compound 建议即创建 |
+| `CONTEXT.md` 领域词汇表 | 项目术语 + 禁用近义词（纯词汇表）；存在时 agent 先读并采用你的词汇，grill 中出现新术语会提议记入 | 首个术语出现时经你确认懒创建；约定见 `skills/using-engineering-workflow/references/domain-glossary.md` |
+| scenario-protocol / loop-verify | 业务验收场景做成机械可验证契约（Given-When-Then + 观察绑定 + held-out 反过拟合），适合有 HTTP 面的项目 | 需单独的 loop-verify 引擎；见 `references/scenario-protocol.md` |
+
 ## 常见问题
 
 ### Q: 改 3 行 CSS 也要走全流程吗？
 
-不需要。Superpowers 的 brainstorming 会自动识别简单任务并 short-circuit。plan-review-personas 对 trivial 计划会跳过审查。你可以直接 TDD → commit。
+不需要。Rule 0 会把它分到 T0/T1（见「流程自动缩放」）：纯样式微调通常 T0 直接做；带行为的小改动 T1，只需一个能失败的检查 + 一次 review。全流程只属于 T2。
 
 ### Q: 如果我赶时间，可以跳过审查吗？
 
@@ -337,3 +366,7 @@ TDD 和 verification 是不可跳过的纪律。structured-review 和 security-a
 ### Q: Learnings Protocol 是什么？
 
 `skills/using-engineering-workflow/references/learnings-protocol.md` 是版本化的契约，定义所有 learning-touching skill 必须遵守的 READ / WRITE / MAINTAIN 三阶段。所有 learning-touching skill 都引用它（权威名单见协议自身的 Skill Participation Reference 表），不重复散文。修改契约是 plugin 的破坏性变更。
+
+## 改插件本身？
+
+仓库根 `CLAUDE.md` 是维护契约（同步不变量清单 + 说谎的路由器规则）；发布前 `python tests/consistency_check.py` 必须 GREEN；改判断类产物（分档规则、reviewer prompt）必须对定稿版跑盲评（协议：`skills/using-engineering-workflow/tests/README.md`）；写新 skill 前读 `docs/skill-authoring.md`。

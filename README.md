@@ -19,6 +19,8 @@ Complete engineering workflow for Claude Code. Extends [Superpowers](https://git
 
 Done. The plugin loads automatically in every new session.
 
+> **日常使用指南（中文）** — how the plugin feels day-to-day, scenario walkthroughs, opt-ins, and FAQ: [`docs/engineering-workflow-guide.md`](docs/engineering-workflow-guide.md).
+
 ## Install
 
 ### Option A: Via Plugin Marketplace (recommended)
