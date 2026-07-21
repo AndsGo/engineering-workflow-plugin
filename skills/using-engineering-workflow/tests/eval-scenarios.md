@@ -11,5 +11,7 @@ Expected tiers are deliberately NOT in this file.
 - **S4:** Add the `learnings-refresh` skill: Python scripts to parse learnings, detect stale entries, cluster by category, generate an INDEX, with a pytest suite. New subsystem, several files, oracle (tests) to be designed.
 - **S5:** Fix an off-by-one in `parse_learnings.py` date parsing; the existing pytest suite covers the module.
 - **S6:** Change how `verifyToken()` validates session expiry in an auth helper (2 files) so tokens 60 min old are still accepted.
+- **S7:** Stale skill-count prose ("10 skills", "11 个自定义 skill") and outdated trigger phrasing have drifted across README.md, ARCHITECTURE.md, CONTRIBUTING.md, the usage guide, and the meta-skill's routing tables (~8 files); correct them all to match the actual 13 skill directories. Textual fixes of the same class per file; no runtime logic.
+- **S8:** Add a fifth reviewer to `structured-review`: a spec-fidelity axis — a new reviewer prompt (hunt categories, severity mapping, JSON contract), orchestration wiring (spec resolution order, axis-separation rules, a new report section), and eval fixtures. How "faithful to the spec" is judged must itself be designed and validated.
 
 Classify each. Output exactly: `Tier: T<n>` + one line of signals + (if any) the escalation condition that fires.

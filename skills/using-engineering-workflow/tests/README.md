@@ -20,3 +20,8 @@ Protocol (run by the controller, see `eval-2026-07-04.md`):
 
 Ground truth is held by the controller and recorded in `eval-2026-07-04.md`
 AFTER the blind runs — never shown to the classifying subagents.
+
+**Re-validations:** any semantic change to Rule 0 re-runs the full suite against
+the shipped text (regression + new-boundary scenarios). Records:
+`eval-2026-07-17-wide-mechanical.md` (v1.10 — size signal replaced by
+nature-based signals; 40/40).

@@ -26,10 +26,10 @@ Classify the **work-item** (the user's current request/deliverable, not a single
 | Tier | Profile | Process (beyond the floor) |
 |---|---|---|
 | **T0 Trivial** | single-point, reversible, unambiguous, oracle already exists, **and no runtime logic/behavior change** (version bump, typo, doc one-liner, comment) | Just do it. Skip the Gates 1–3 (route via Rule 1 as normal). **Silent.** |
-| **T1 Standard** | bounded, 1–few files, target clear, oracle exists/cheap | Announce. spec-lite + one failing test as oracle + self-review + ONE `structured-review`. Skip brainstorming / plan-review / subagent choreography. |
-| **T2 Substantial** | multi-file, real design choices, intent must be excavated, or oracle must be designed | Announce. Full flow: `superpowers:brainstorming` → `superpowers:writing-plans` → `plan-review-personas` → `superpowers:subagent-driven-development` → `structured-review`. |
+| **T1 Standard** | bounded, target clear, oracle exists/cheap — 1–few files, OR **wide-mechanical**: many files, ONE repeated pattern, no per-site design choice (rename, sync sweep, mass textual update) | Announce (wide-mechanical: declare expected breadth). spec-lite + one failing test as oracle + self-review + ONE `structured-review`. Skip brainstorming / plan-review / subagent choreography. |
+| **T2 Substantial** | real design choices, intent must be excavated, oracle must be designed, or breadth with cross-cutting design risk (interacting subsystems — not the same edit repeated) | Announce. Full flow: `superpowers:brainstorming` → `superpowers:writing-plans` → `plan-review-personas` → `superpowers:subagent-driven-development` → `structured-review`. |
 
-Signals (highest wins; round up ONLY when genuinely uncertain — over-escalating everything defeats the purpose): **surface area** (>~5 files or >1 subsystem → T2), **ambiguity** (intent must be excavated → T2), **verifiability** (oracle must be designed → T2). **Any change to runtime behavior/logic is ≥T1** (it needs a check that can fail — so a one-line bugfix is T1, not T0). Security/irreversibility is NOT a size signal — it is the floor overlay (0.3 #6 / 0.4 E-1).
+Signals (highest wins; round up ONLY when genuinely uncertain — over-escalating everything defeats the purpose): **design divergence** (real alternatives to choose between → T2), **ambiguity** (intent must be excavated → T2), **verifiability** (oracle must be designed → T2), **interaction breadth** (>1 subsystem whose changes interact — beyond the same edit repeated → T2). **Size alone is not a tier signal:** the same change repeated across many files with no per-site design choice is **wide-mechanical T1** — announce the expected breadth; E-2 escalates if the work outgrows the announcement. **Any change to runtime behavior/logic is ≥T1** (it needs a check that can fail — so a one-line bugfix is T1, not T0). Security/irreversibility is NOT a size signal — it is the floor overlay (0.3 #6 / 0.4 E-1).
 
 #### 0.2 Precedence — conservative wins
 
@@ -49,13 +49,13 @@ If a tier conflicts with the consumer's own `CLAUDE.md` rule or a Superpowers Ir
 | # | Condition (vs the actual diff) | Forced action | Tunable |
 |---|---|---|---|
 | E-1 | touches a security path: auth, secrets/credentials/keys/tokens/session, input validation, public API, crypto, SQL/query, file-path/upload, deserialization, secret-bearing config | **≥T2 + mandatory `security-audit`** + human approval before the irreversible step | **No** — consumers may extend the list, not disable it |
-| E-2 | cumulative files > ~5, or a 2nd subsystem involved | escalate to **T2**; plan-review before continuing | upward only, hard floor |
+| E-2 | scope outgrew the classification: more files/subsystems than the announcement declared; absolute > ~5 files when NO breadth was announced (silent T0 / plain T1); or per-site judgment emerged in work classified wide-mechanical | escalate to **T2**; plan-review before continuing | upward only, hard floor |
 | E-3 | a test that cannot fail / was weakened to pass | **STOP** — broken oracle | No |
 | E-4 | diff performs a surprise irreversible/destructive op (migration, delete/drop, mass rewrite, force-push) | escalate to **≥T2** + human approval before the irreversible step | No |
 
 #### 0.5 Announce
 
-T1+ emit before acting: `Tier: T<n> — <signals> → <process>`. **T0 is silent** (still obeys the floor, including the 0.3 #6 checkpoint). Checkpoint escalations are always announced. Honor overrides verbatim ("treat as T2" / "run full").
+T1+ emit before acting: `Tier: T<n> — <signals> → <process>`; wide-mechanical T1 additionally declares expected breadth: `Tier: T1 (wide-mechanical, ~N files / <subsystems>) — …` (the announcement is what E-2 measures against). **T0 is silent** (still obeys the floor, including the 0.3 #6 checkpoint). Checkpoint escalations are always announced. Honor overrides verbatim ("treat as T2" / "run full").
 
 ### Rule 1: Skill Routing (MUST follow)
 

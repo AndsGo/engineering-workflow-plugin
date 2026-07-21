@@ -2,6 +2,21 @@
 
 All notable changes to this plugin are documented here. Written for users, not contributors.
 
+## [1.10.0] - 2026-07-17
+
+Rule 0 recalibration for stronger models: size is no longer a tier signal by itself.
+
+### Changed
+- **Rule 0 signals**: `surface area (>~5 files → T2)` is replaced by nature-based signals — **design divergence**, ambiguity, verifiability, and **interaction breadth** (interacting subsystems, not the same edit repeated). A single pattern repeated across many files with no per-site design choice is now **wide-mechanical T1**: announce the expected breadth and proceed with the T1 process (spec-lite + failing check + one review).
+- **E-2 escalation retargeted to the announcement**: it now fires when scope outgrows what was declared (more files/subsystems than announced, or per-site judgment emerging in work classified mechanical); the absolute >~5-files trigger remains for work that declared no breadth (silent T0 / plain T1) — so deliberate wide work isn't retro-escalated, while silent ballooning still is. Upward-only, non-tunable, unchanged otherwise.
+- 0.5 announce format gains the wide-mechanical variant: `Tier: T1 (wide-mechanical, ~N files / <subsystems>) — …`.
+
+### Validation
+- Blind re-run of the full held-out suite against the shipped rubric (protocol: `skills/using-engineering-workflow/tests/README.md`): original 6 scenarios (regression) + 2 new boundary scenarios (S7 wide-mechanical sweep, S8 design-heavy reviewer addition), ≥5 fresh runs each; record in `skills/using-engineering-workflow/tests/eval-2026-07-17-wide-mechanical.md`.
+
+### Compatibility
+- Floor unchanged; the escalation set is unchanged in strength (all upward-only, non-tunable) — E-2's trigger is recharacterized as described above, E-1/E-3/E-4 untouched. Conservative-wins still applies — a consumer CLAUDE.md that keeps "multi-file → T2" wins over this loosening until the consumer opts in.
+
 ## [1.9.0] - 2026-07-17
 
 Second-tier borrowing ⑦ from the mattpocock/skills comparison (two-axis review, adapted with attribution).
